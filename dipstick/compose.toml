@@ -1,0 +1,125 @@
+# SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
+# SPDX-License-Identifier: MPL-2.0-or-later
+version = "1.0"
+
+###############################################################################
+# Application Bundle
+###############################################################################
+
+[services.nuj-stack]
+image = "ghcr.io/hyperpolymath/social-media-monitor:latest.ctp"
+ports = ["3001:3001", "3002:3002", "3003:3003", "4000:4000"]
+environment = {
+  SURREAL_ENDPOINT = "http://surrealdb:8000",
+  SURREAL_NAMESPACE = "nuj",
+  SURREAL_DATABASE = "nuj_monitor",
+  DATABASE_URL = "postgresql://root:changeme_use_strong_password@surrealdb:5432/nuj_monitor",
+  REDIS_URL = "redis://dragonfly-cache:6379/0"
+}
+depends_on = ["surrealdb", "verisimdb", "dragonfly-cache", "redis"]
+restart = "always"
+
+###############################################################################
+# Supporting Infrastructure
+###############################################################################
+
+[services.surrealdb]
+image = "ghcr.io/surrealdb/surrealdb:latest"
+ports = ["8000:8000", "5432:5432"]
+environment = {
+  SURREAL_USER = "root",
+  SURREAL_PASSWORD = "changeme_use_strong_password",
+  SURREAL_NAMESPACE = "nuj",
+  SURREAL_DATABASE = "nuj_monitor"
+}
+volumes = ["surreal-data:/var/lib/surrealdb", "db-schema:/app/database"]
+healthcheck = { test = "surreal sql --ns nuj --db nuj_monitor 'SHOW TABLES;'", interval = "30s" }
+restart = "always"
+
+[services.verisimdb]
+image = "ghcr.io/hyperpolymath/verisimdb:latest.ctp"
+ports = ["9170:9170"]
+environment = {
+  VERISIM_API_KEY = "changeme_verisim_api_key",
+  VERISIM_NAMESPACE = "nuj",
+  VERISIM_DATABASE = "nuj_monitor"
+}
+volumes = ["verisim-data:/var/lib/verisim"]
+depends_on = ["surrealdb"]
+restart = "on-failure"
+
+[services.dragonfly-cache]
+image = "ghcr.io/hyperpolymath/dragonfly:latest.ctp"
+ports = ["6379:6379"]
+environment = { REDIS_PASSWORD = "changeme_use_strong_password" }
+volumes = ["dragonfly-data:/var/lib/dragonfly"]
+restart = "always"
+
+[services.redis]
+image = "ghcr.io/hyperpolymath/redis:7.ctp"
+ports = ["6380:6379"]
+environment = { REDIS_PASSWORD = "changeme_use_strong_password" }
+restart = "on-failure"
+
+[services.xtdb]
+image = "ghcr.io/hyperpolymath/xtdb:latest.ctp"
+restart = "on-failure"
+
+[services.virtuoso]
+image = "ghcr.io/hyperpolymath/virtuoso:latest.ctp"
+ports = ["8890:8890", "1111:1111"]
+restart = "on-failure"
+
+[services.prometheus]
+image = "ghcr.io/hyperpolymath/prometheus:latest.ctp"
+ports = ["9090:9090"]
+volumes = ["prometheus-data:/prometheus"]
+depends_on = ["nuj-stack"]
+restart = "always"
+
+[services.grafana]
+image = "ghcr.io/hyperpolymath/grafana:10.4.0.ctp"
+ports = ["3000:3000"]
+depends_on = ["prometheus"]
+volumes = ["grafana-storage:/var/lib/grafana"]
+restart = "always"
+
+[services.loki]
+image = "ghcr.io/hyperpolymath/loki:2.9.0.ctp"
+ports = ["3100:3100"]
+volumes = ["loki-storage:/loki"]
+depends_on = ["nuj-stack"]
+restart = "always"
+
+###############################################################################
+# Volumes
+###############################################################################
+
+[volumes.surreal-data]
+driver = "local"
+
+[volumes.verisim-data]
+driver = "local"
+
+[volumes.dragonfly-data]
+driver = "local"
+
+[volumes.db-schema]
+driver = "local"
+driver_opts = { type = "bind", source = "./infrastructure/database", o = "bind" }
+
+[volumes.prometheus-data]
+driver = "local"
+
+[volumes.grafana-storage]
+driver = "local"
+
+[volumes.loki-storage]
+driver = "local"
+
+###############################################################################
+# Networks
+###############################################################################
+
+[networks.default]
+driver = "selur"

@@ -1,0 +1,32 @@
+# Elixir CRDT Node Container
+
+FROM elixir:1.15-alpine
+
+# Install dependencies
+RUN apk add --no-cache build-base git
+
+# Set working directory
+WORKDIR /app
+
+# Copy mix files
+COPY mix.exs mix.lock ./
+
+# Install hex and rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
+
+# Install dependencies
+RUN mix deps.get && \
+    mix deps.compile
+
+# Copy source code
+COPY lib ./lib
+COPY config ./config
+
+# Compile application
+RUN mix compile
+
+# Expose Erlang distribution port
+EXPOSE 4369 9100-9155
+
+CMD ["mix", "run", "--no-halt"]

@@ -1,0 +1,36 @@
+= Social-Media-Dipstick - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{social-media-dipstick_2025,
+  author = {Polymath, Hyper},
+  title = {Social-Media-Dipstick},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/Social-Media-Dipstick},
+  license = {AGPL-3.0-or-later}
+}
+----
+
+== Harvard Style
+
+Polymath, H. (2025) _Social-Media-Dipstick_ [Computer software]. Available at: https://github.com/hyperpolymath/Social-Media-Dipstick
+
+== OSCOLA
+
+Hyper Polymath, 'Social-Media-Dipstick' (2025) <https://github.com/hyperpolymath/Social-Media-Dipstick>
+
+== MLA
+
+Polymath, Hyper. "Social-Media-Dipstick." 2025, github.com/hyperpolymath/Social-Media-Dipstick.
+
+== APA 7
+
+Polymath, H. (2025). _Social-Media-Dipstick_ [Computer software]. GitHub. https://github.com/hyperpolymath/Social-Media-Dipstick
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

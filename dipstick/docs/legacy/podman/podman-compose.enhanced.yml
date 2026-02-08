@@ -1,0 +1,486 @@
+version: '3.8'
+
+# NUJ Social Media Ethics Monitor - Enhanced Stack v2.0
+# Architecture: ReScript + Deno + WASM + Rust + Elixir + Julia + Ada
+# NO Python, NO TypeScript, NO Node.js - Pure functional + systems programming
+# Features: AI Agent Swarms, PESTLE Observatory, GraphQL Federation
+
+networks:
+  nuj-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  postgres-data:
+  virtuoso-data:
+  dragonfly-data:
+  xtdb-data:
+  grafana-data:
+  prometheus-data:
+  loki-data:
+
+services:
+  # ====================
+  # DATA LAYER
+  # ====================
+
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    container_name: nuj-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-nuj_monitor}
+      POSTGRES_USER: ${DATABASE_USER:-nuj}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-changeme}
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+    ports:
+      - "${DATABASE_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infrastructure/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./infrastructure/database/migrations:/docker-entrypoint-initdb.d/migrations:ro
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.10
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-nuj}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+  virtuoso:
+    image: openlink/virtuoso-opensource-7:latest
+    container_name: nuj-virtuoso
+    restart: unless-stopped
+    environment:
+      DBA_PASSWORD: ${VIRTUOSO_PASSWORD:-dba}
+      SPARQL_UPDATE: "true"
+      DEFAULT_GRAPH: "https://nuj.org.uk/monitor/pestle"
+    ports:
+      - "${VIRTUOSO_PORT:-1111}:1111"
+      - "${VIRTUOSO_HTTP_PORT:-8890}:8890"
+    volumes:
+      - virtuoso-data:/opt/virtuoso-opensource/database
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.60
+    healthcheck:
+      test: ["CMD-SHELL", "isql 1111 dba dba EXEC='SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    container_name: nuj-dragonfly
+    restart: unless-stopped
+    command:
+      - --logtostderr
+      - --requirepass=${DRAGONFLY_PASSWORD:-changeme}
+      - --maxmemory=2gb
+      - --cache_mode=true
+    ports:
+      - "${DRAGONFLY_PORT:-6379}:6379"
+    volumes:
+      - dragonfly-data:/data
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.61
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+  xtdb:
+    image: juxt/xtdb-standalone-rocksdb:latest
+    container_name: nuj-xtdb
+    restart: unless-stopped
+    ports:
+      - "${XTDB_PORT:-3000}:3000"
+    volumes:
+      - xtdb-data:/var/lib/xtdb
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.62
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/_xtdb/status || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+  # ====================
+  # CORE SERVICES
+  # ====================
+
+  collector:
+    build:
+      context: ./services/collector
+      dockerfile: Dockerfile
+    container_name: nuj-collector
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER:-nuj}:${DATABASE_PASSWORD:-changeme}@postgres:5432/${DATABASE_NAME:-nuj_monitor}
+      DRAGONFLY_URL: redis://:${DRAGONFLY_PASSWORD:-changeme}@dragonfly:6379
+      RUST_LOG: ${RUST_LOG:-info}
+      TWITTER_API_KEY: ${TWITTER_API_KEY:-}
+      META_ACCESS_TOKEN: ${META_ACCESS_TOKEN:-}
+    ports:
+      - "${COLLECTOR_PORT:-3001}:3001"
+    depends_on:
+      - postgres
+      - dragonfly
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.20
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+
+  analyzer-rescript:
+    build:
+      context: ./services/analyzer-rescript
+      dockerfile: Dockerfile
+    container_name: nuj-analyzer
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER:-nuj}:${DATABASE_PASSWORD:-changeme}@postgres:5432/${DATABASE_NAME:-nuj_monitor}
+      DRAGONFLY_URL: redis://:${DRAGONFLY_PASSWORD:-changeme}@dragonfly:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      DENO_ENV: production
+    ports:
+      - "${ANALYZER_PORT:-3002}:3002"
+    depends_on:
+      - postgres
+      - dragonfly
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.21
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3002/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 2G
+
+  publisher-deno:
+    build:
+      context: ./services/publisher-deno
+      dockerfile: Dockerfile
+    container_name: nuj-publisher
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER:-nuj}:${DATABASE_PASSWORD:-changeme}@postgres:5432/${DATABASE_NAME:-nuj_monitor}
+      DRAGONFLY_URL: redis://:${DRAGONFLY_PASSWORD:-changeme}@dragonfly:6379
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      FROM_EMAIL: ${FROM_EMAIL:-monitor@nuj.org.uk}
+      DENO_ENV: production
+    ports:
+      - "${PUBLISHER_PORT:-3003}:3003"
+    depends_on:
+      - postgres
+      - dragonfly
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.22
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3003/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  dashboard:
+    build:
+      context: ./services/dashboard
+      dockerfile: Dockerfile
+    container_name: nuj-dashboard
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ecto://nuj:changeme@postgres:5432/nuj_monitor
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-changeme_in_production}
+      PHX_HOST: ${PHX_HOST:-localhost}
+      PORT: 4000
+    ports:
+      - "${DASHBOARD_PORT:-4000}:4000"
+    depends_on:
+      - postgres
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.23
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:4000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+
+  # ====================
+  # AI & INTELLIGENCE
+  # ====================
+
+  agent-swarm:
+    build:
+      context: ./services/agent-swarm
+      dockerfile: Dockerfile
+    container_name: nuj-agent-swarm
+    restart: unless-stopped
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      DATABASE_URL: postgresql://${DATABASE_USER:-nuj}:${DATABASE_PASSWORD:-changeme}@postgres:5432/${DATABASE_NAME:-nuj_monitor}
+      DRAGONFLY_URL: redis://:${DRAGONFLY_PASSWORD:-changeme}@dragonfly:6379
+      DENO_ENV: production
+    ports:
+      - "${AGENT_SWARM_PORT:-3004}:3004"
+    depends_on:
+      - postgres
+      - dragonfly
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.30
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3004/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 3G
+
+  pestle-observatory:
+    build:
+      context: ./services/pestle-observatory
+      dockerfile: Dockerfile
+    container_name: nuj-pestle-observatory
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER:-nuj}:${DATABASE_PASSWORD:-changeme}@postgres:5432/${DATABASE_NAME:-nuj_monitor}
+      VIRTUOSO_URL: https://virtuoso:8890/sparql
+      DRAGONFLY_URL: redis://:${DRAGONFLY_PASSWORD:-changeme}@dragonfly:6379
+      DENO_ENV: production
+    ports:
+      - "${PESTLE_OBSERVATORY_PORT:-3005}:3005"
+    depends_on:
+      - virtuoso
+      - dragonfly
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.31
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3005/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+
+  # ====================
+  # API GATEWAY
+  # ====================
+
+  gateway-rescript:
+    build:
+      context: ./services/gateway-rescript
+      dockerfile: Dockerfile
+    container_name: nuj-gateway
+    restart: unless-stopped
+    environment:
+      COLLECTOR_URL: http://collector:3001
+      ANALYZER_URL: https://analyzer-rescript:3002
+      PUBLISHER_URL: https://publisher-deno:3003
+      AGENT_SWARM_URL: https://agent-swarm:3004
+      PESTLE_OBSERVATORY_URL: http://pestle-observatory:3005
+      DENO_ENV: production
+    ports:
+      - "${GATEWAY_PORT:-8000}:8000"
+    depends_on:
+      - collector
+      - analyzer-rescript
+      - publisher-deno
+      - agent-swarm
+      - pestle-observatory
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.40
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+
+  # ====================
+  # ADVANCED SERVICES
+  # ====================
+
+  scraper-julia:
+    build:
+      context: ./services/scraper-julia
+      dockerfile: Dockerfile
+    container_name: nuj-scraper-julia
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER:-nuj}:${DATABASE_PASSWORD:-changeme}@postgres:5432/${DATABASE_NAME:-nuj_monitor}
+      DRAGONFLY_URL: redis://:${DRAGONFLY_PASSWORD:-changeme}@dragonfly:6379
+    ports:
+      - "${SCRAPER_PORT:-3006}:3006"
+    depends_on:
+      - postgres
+      - dragonfly
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.50
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3006/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '8.0'
+          memory: 4G
+
+  xtdb-temporal:
+    build:
+      context: ./services/xtdb-temporal
+      dockerfile: Dockerfile
+    container_name: nuj-xtdb-temporal
+    restart: unless-stopped
+    environment:
+      XTDB_URL: https://xtdb:3000
+    ports:
+      - "${XTDB_TEMPORAL_PORT:-3007}:3007"
+    depends_on:
+      - xtdb
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.51
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3007/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  # ====================
+  # MONITORING
+  # ====================
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: nuj-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.70
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: nuj-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_INSTALL_PLUGINS: grafana-piechart-panel
+    ports:
+      - "${GRAFANA_PORT:-3010}:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infrastructure/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.71
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  loki:
+    image: grafana/loki:latest
+    container_name: nuj-loki
+    restart: unless-stopped
+    ports:
+      - "${LOKI_PORT:-3100}:3100"
+    volumes:
+      - loki-data:/loki
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.72
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M

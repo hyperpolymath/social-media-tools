@@ -1,0 +1,200 @@
+# SPDX-License-Identifier: MPL-2.0-or-later
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, 'claude/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository_owner }}/nuj-monitor
+
+jobs:
+  test-collector:
+    name: Test Collector Service (Rust)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.1
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            services/collector/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Run tests
+        working-directory: services/collector
+        run: |
+          cargo fmt -- --check
+          cargo clippy -- -D warnings
+          cargo test
+
+  test-analyzer:
+    name: Test Analyzer Service (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.1
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Cache Python dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('services/analyzer/pyproject.toml') }}
+
+      - name: Install dependencies
+        working-directory: services/analyzer
+        run: |
+          pip install -e ".[dev]"
+          python -m spacy download en_core_web_lg
+
+      - name: Run linters
+        working-directory: services/analyzer
+        run: |
+          black --check .
+          isort --check-only .
+          mypy app/
+
+      - name: Run tests
+        working-directory: services/analyzer
+        run: pytest
+
+  test-publisher:
+    name: Test Publisher Service (Node.js)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Cache Node modules
+        uses: actions/cache@v5
+        with:
+          path: services/publisher/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('services/publisher/package-lock.json') }}
+
+      - name: Install dependencies
+        working-directory: services/publisher
+        run: npm ci
+
+      - name: Run linter
+        working-directory: services/publisher
+        run: npm run lint
+
+      - name: Run tests
+        working-directory: services/publisher
+        run: npm test
+
+  test-dashboard:
+    name: Test Dashboard Service (Elixir)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.1
+
+      - name: Setup Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: '1.15'
+          otp-version: '26'
+
+      - name: Cache Mix dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            services/dashboard/deps
+            services/dashboard/_build
+          key: ${{ runner.os }}-mix-${{ hashFiles('services/dashboard/mix.lock') }}
+
+      - name: Install dependencies
+        working-directory: services/dashboard
+        run: |
+          mix local.hex --force
+          mix local.rebar --force
+          mix deps.get
+
+      - name: Run tests
+        working-directory: services/dashboard
+        run: |
+          mix format --check-formatted
+          mix test
+
+  build-images:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    needs: [test-collector, test-analyzer, test-publisher, test-dashboard]
+    if: github.event_name == 'push'
+    strategy:
+      matrix:
+        service: [collector, analyzer, publisher, dashboard]
+    steps:
+      - uses: actions/checkout@v6.0.1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-${{ matrix.service }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,prefix={{branch}}-
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ./services/${{ matrix.service }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.1
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4.31.9
+        with:
+          sarif_file: 'trivy-results.sarif'

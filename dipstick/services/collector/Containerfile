@@ -1,0 +1,51 @@
+# NUJ Collector Service - Multi-stage Rust build
+
+FROM rust:1.75-slim as builder
+
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apk add --no-cache -y \
+    pkg-config \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy manifests
+COPY Cargo.toml Cargo.lock* ./
+
+# Create dummy main to cache dependencies
+RUN mkdir src && \
+    echo "fn main() {}" > src/main.rs && \
+    cargo build --release || true && \
+    rm -rf src
+
+# Copy actual source
+COPY src ./src
+
+# Build release binary
+RUN cargo build --release
+
+# Runtime stage
+FROM cgr.dev/chainguard/wolfi-base:bookworm-slim
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apk add --no-cache -y \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy binary from builder
+COPY --from=builder /app/target/release/nuj-collector /app/collector
+
+# Create non-root user
+RUN useradd -m -u 1000 nuj && chown -R nuj:nuj /app
+USER nuj
+
+EXPOSE 3001
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:3001/health || exit 1
+
+CMD ["/app/collector"]

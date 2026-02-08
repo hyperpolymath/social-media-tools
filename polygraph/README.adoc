@@ -1,0 +1,513 @@
+= Social Media Polygraph
+
+> AI-powered fact-checking and misinformation detection for social media
+
+[![CI/CD]()](https://github.com/hyperpolymath/social-media-polygraph/actions)
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
+
+== License & Philosophy
+
+This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
+
+Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
+// SPDX-License-Identifier: MPL-2.0-or-later
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+
+[![RSR Compliance]()](scripts/check-rsr-compliance.sh)
+[![Security](https://img.shields.io/badge/security-RFC%209116-green.svg)](.well-known/security.txt)
+
+== Overview
+
+Social Media Polygraph is a comprehensive, AI-powered platform for verifying claims and detecting misinformation on social media. It combines advanced Natural Language Processing (NLP), multiple fact-checking databases, source credibility analysis, and temporal tracking to provide accurate, reliable verification results.
+
+== Features
+
+- *🔍 Multi-Source Verification*: Cross-references claims with multiple fact-checking services
+- *🤖 Advanced NLP*: Entity extraction, sentiment analysis, and claim decomposition
+- *📊 Credibility Scoring*: Sophisticated algorithms evaluate source reliability
+- *⏱️ Temporal Tracking*: Track how claim verifications change over time using XTDB
+- *🌐 GraphQL API*: Type-safe API with real-time subscriptions
+- *💻 Web Interface*: Modern React frontend for easy claim verification
+- *🔌 Browser Extension*: In-context fact-checking on social media platforms
+- *📈 Analytics*: Comprehensive metrics and reporting
+
+== Technology Stack
+
+=== Backend
+- *Rust 1.75* with Axum web framework
+- *async-graphql* - Type-safe GraphQL server
+- *WASM* - WebAssembly modules for browser-side performance
+- *ArangoDB* - Multi-model database (document, graph, key-value)
+- *XTDB* - Temporal database for claim history tracking
+- *Dragonfly* - High-performance Redis-compatible cache
+- *Cargo* - Rust package manager
+
+=== Distributed State Layer
+- *Elixir 1.15* - Distributed, fault-tolerant runtime
+- *CRDTs* (Conflict-Free Replicated Data Types) - Eventually consistent distributed state
+- *Erlang distribution* - Multi-node clustering
+
+=== Frontend
+- *ReScript* - Type-safe functional language compiling to JavaScript
+- *Deno* - Secure TypeScript/JavaScript runtime
+- *React 18* - UI framework
+- *TailwindCSS* - Styling
+- *GraphQL Codegen* - Type-safe GraphQL client
+
+=== Infrastructure
+- *Podman* - Container runtime (rootless containers)
+- *Podman Compose* - Multi-container orchestration
+- *Nix* - Reproducible builds and development environments
+- *Nginx* - Reverse proxy with SSL termination
+- *GitHub Actions* - CI/CD
+
+== Quick Start
+
+=== Prerequisites
+
+- Rust 1.75+
+- Elixir 1.15+
+- Node.js 20+ (for ReScript compilation)
+- Deno 1.40+
+- Podman (or Docker)
+- Nix (optional but recommended)
+
+=== Option 1: Using Podman Compose (Recommended)
+
+```bash
+= Clone the repository
+git clone https://github.com/hyperpolymath/social-media-polygraph.git
+cd social-media-polygraph
+
+= Start all services
+./scripts/start-dev.sh
+```
+
+This will start:
+- Nginx Reverse Proxy: http://localhost (HTTPS: https://localhost:443)
+- Backend GraphQL API: http://localhost:8000/graphql
+- Frontend: http://localhost:8080
+- Elixir CRDT Nodes: localhost:9100-9101
+- ArangoDB: http://localhost:8529
+- XTDB: http://localhost:3000
+- Dragonfly: localhost:6379
+
+GraphQL Playground: http://localhost:8000/graphql (dev mode only)
+
+=== Option 2: Using Nix (Recommended for Reproducibility)
+
+```bash
+= Enter development shell with all dependencies
+nix develop
+
+= Start services
+just up
+
+= Or run specific components
+just run-backend
+just run-frontend
+```
+
+=== Option 3: Manual Setup
+
+==== Backend Setup (Rust)
+
+```bash
+cd backend
+
+= Build the project
+cargo build --release
+
+= Copy environment file
+cp ../.env.example ../.env
+
+= Run the server
+cargo run --release
+```
+
+==== Elixir CRDT Layer
+
+```bash
+cd elixir
+
+= Install dependencies
+mix deps.get
+
+= Compile
+mix compile
+
+= Run node
+mix run --no-halt
+```
+
+==== Frontend Setup (ReScript + Deno)
+
+```bash
+cd frontend
+
+= Install npm dependencies for ReScript
+npm install
+
+= Compile ReScript to JavaScript
+npm run res:build
+
+= Build with Deno
+deno task build
+
+= Or run dev server
+deno task dev
+```
+
+== GraphQL API Usage
+
+=== Verify a Claim
+
+```bash
+curl -X POST "http://localhost:8000/graphql" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "mutation VerifyClaim($input: ClaimInput!) { verifyClaim(input: $input) { claimId verdict confidence explanation sources { name url rating } credibilityScore } }",
+    "variables": {
+      "input": {
+        "text": "The Earth is flat",
+        "sourceUrl": "https://example.com/post",
+        "platform": "TWITTER"
+      }
+    }
+  }'
+```
+
+=== Response
+
+```json
+{
+  "data": {
+    "verifyClaim": {
+      "claimId": "abc123",
+      "verdict": "FALSE",
+      "confidence": 0.95,
+      "explanation": "This claim has been thoroughly debunked by scientific evidence...",
+      "sources": [
+        {
+          "name": "Google Fact Check",
+          "url": "https://factcheck.example.com/earth-shape",
+          "rating": 0.98
+        }
+      ],
+      "credibilityScore": 0.15
+    }
+  }
+}
+```
+
+=== Query Claim History (Temporal Tracking)
+
+```graphql
+query ClaimHistory($id: ID!) {
+  claimHistory(id: $id) {
+    timestamp
+    verdict
+    confidence
+    sources {
+      name
+      rating
+    }
+  }
+}
+```
+
+== Browser Extension
+
+=== Installation
+
+1. Navigate to `browser-extension` directory
+2. Load as unpacked extension in Chrome/Edge:
+   - Open `chrome://extensions`
+   - Enable "Developer mode"
+   - Click "Load unpacked"
+   - Select the `browser-extension` directory
+
+=== Usage
+
+- Right-click selected text and choose "Verify with Polygraph"
+- Click extension icon and paste claim to verify
+- On supported platforms (Twitter/X), verify buttons appear on posts
+
+== Development
+
+=== Running Tests
+
+==== Backend (Rust)
+
+```bash
+cd backend
+cargo test
+cargo test --release
+cargo clippy -- -D warnings
+```
+
+==== Elixir
+
+```bash
+cd elixir
+mix test
+mix format --check-formatted
+mix credo --strict
+```
+
+==== Frontend (ReScript)
+
+```bash
+cd frontend
+npm run res:build  # ReScript type-checking
+deno task test
+deno lint
+```
+
+=== Code Quality
+
+```bash
+= Rust
+cd backend
+cargo fmt --check
+cargo clippy -- -D warnings
+cargo audit
+
+= Elixir
+cd elixir
+mix format
+mix credo
+mix dialyzer
+
+= ReScript/Deno
+cd frontend
+npm run res:build
+deno fmt --check
+deno lint
+```
+
+== Project Structure
+
+```
+social-media-polygraph/
+├── backend/                 # Rust GraphQL backend
+│   ├── src/
+│   │   ├── api/            # GraphQL schema and resolvers
+│   │   ├── db/             # Database clients (ArangoDB, XTDB)
+│   │   ├── services/       # Business logic and fact-checking APIs
+│   │   ├── wasm/           # WebAssembly modules
+│   │   └── main.rs         # Entry point
+│   ├── Cargo.toml          # Rust dependencies
+│   └── Containerfile       # Rust container build
+├── elixir/                 # Elixir CRDT distributed state
+│   ├── lib/polygraph/
+│   │   ├── crdt/          # CRDT implementations
+│   │   ├── cluster/       # Node clustering
+│   │   └── sync/          # State synchronization
+│   ├── mix.exs            # Elixir dependencies
+│   └── Containerfile      # Elixir container build
+├── frontend/              # ReScript + Deno frontend
+│   ├── src/
+│   │   ├── components/    # React components (.res files)
+│   │   ├── pages/         # Page components
+│   │   ├── graphql/       # GraphQL queries and mutations
+│   │   └── Index.res      # Entry point
+│   ├── bsconfig.json      # ReScript configuration
+│   ├── deno.json          # Deno configuration
+│   └── Containerfile      # Frontend container build
+├── browser-extension/     # Browser extension
+│   ├── src/              # Extension code
+│   └── public/           # Extension assets (SVG icons)
+├── infrastructure/       # Infrastructure configs
+│   ├── podman/          # Podman compose files
+│   └── configs/         # Nginx, SSL configurations
+├── scripts/             # Utility scripts
+├── flake.nix           # Nix development environment
+└── docs/               # Documentation
+```
+
+== Configuration
+
+=== Environment Variables
+
+See `.env.example` for complete configuration. Key variables:
+
+```env
+= Database
+ARANGO_PASSWORD=your-strong-password
+XTDB_NODE_URL=http://xtdb:3000
+DRAGONFLY_URL=redis://dragonfly:6379
+
+= Elixir Cluster
+ERLANG_COOKIE=your-secret-cookie
+CRDT_SYNC_INTERVAL=5000
+
+= Authentication
+JWT_SECRET=your-jwt-secret
+
+= Fact-Checking APIs
+GOOGLE_FACT_CHECK_API_KEY=your-google-api-key
+NEWS_API_KEY=your-newsapi-key
+CLAIM_BUSTER_API_KEY=your-claimbuster-key
+
+= Application
+RUST_LOG=info
+ENABLE_WASM_SCORING=true
+GRAPHQL_PLAYGROUND=false
+
+= SSL/TLS
+DOMAIN_NAME=polygraph.example.com
+LETSENCRYPT_EMAIL=admin@example.com
+```
+
+*IMPORTANT*: Copy `.env.example` to `.env` and configure with your actual values. Never commit `.env` to version control!
+
+== GraphQL API Documentation
+
+GraphQL Playground is available at `http://localhost:8000/graphql` (development mode only).
+
+=== Key Operations
+
+*Mutations:*
+- `verifyClaim(input: ClaimInput!)` - Verify a new claim
+- `updateVerification(id: ID!, verdict: Verdict!)` - Update claim verification
+- `registerUser(input: RegisterInput!)` - Register new user
+- `login(credentials: LoginInput!)` - Authenticate user
+
+*Queries:*
+- `claim(id: ID!)` - Get single claim analysis
+- `claims(filter: ClaimFilter, pagination: Pagination)` - Search claims
+- `claimHistory(id: ID!)` - Get temporal verification history
+- `sourceCredibility(url: String!)` - Check source credibility
+- `me` - Get current user info
+
+*Subscriptions:*
+- `verificationUpdated(claimId: ID!)` - Real-time verification updates
+- `newClaims(filter: ClaimFilter)` - Subscribe to new claims
+
+GraphQL introspection and playground should be disabled in production.
+
+== Architecture
+
+=== Data Flow
+
+1. *Claim Submission* → User submits via GraphQL API, web UI, or extension
+2. *WASM Processing* → Browser-side credibility pre-scoring (optional)
+3. *Rust Backend* → Receives GraphQL mutation
+4. *Fact Checking* → Query real APIs (Google Fact Check, NewsAPI, ClaimBuster)
+5. *CRDT Update* → Distribute verification state across Elixir cluster
+6. *Credibility Scoring* → Rust algorithms calculate final scores
+7. *Storage* → Store in ArangoDB (current state), XTDB (temporal history)
+8. *Caching* → Cache results in Dragonfly
+9. *Response* → Return via GraphQL, optionally push via WebSocket subscription
+
+=== Architecture Highlights
+
+- *Rust Backend*: Memory-safe, high-performance GraphQL API
+- *Elixir CRDT Layer*: Distributed, eventually consistent state across nodes
+- *ArangoDB*: Multi-model storage for claims, sources, and relationships
+- *XTDB*: Bitemporal database for complete verification history
+- *Dragonfly*: High-throughput caching layer
+- *WASM Modules*: Browser-side performance for credibility pre-scoring
+- *ReScript Frontend*: Compile-time type safety for UI
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed design.
+
+== Contributing
+
+We welcome contributions! This project follows the *Tri-Perimeter Contribution Framework (TPCF)*:
+
+- *Perimeter 3 (Community Sandbox)*: Open to all - submit PRs from forks
+- *Perimeter 2 (Trusted Contributors)*: Regular contributors with proven track record
+- *Perimeter 1 (Core Maintainers)*: Project leadership and decision-making
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [MAINTAINERS.md](MAINTAINERS.md) for details.
+
+=== Quick Start
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+== Ethics & Responsible Use
+
+This tool is designed to combat misinformation and should be used responsibly:
+
+- *Transparency*: We show sources and reasoning for all verdicts
+- *Privacy*: User data is handled securely and never sold
+- *Bias Mitigation*: Algorithms are designed to minimize bias
+- *Human Oversight*: Automated verdicts should be reviewed
+- *Platform ToS*: Respect social media platform terms of service
+
+== License
+
+This project is *dual-licensed*:
+
+- *[Palimpsest-MPL-1.0 License](LICENSE)* - Permissive open source license
+- *[Palimpsest License v0.8](LICENSE-PALIMPSEST.txt)* - Adds ethical use guidelines
+
+You may choose which license to follow. The Palimpsest License provides additional community expectations around:
+- Ethical use (no surveillance, weapons, discrimination)
+- Attribution and transparency
+- Privacy and accessibility
+- Community contribution
+
+See [LICENSE-PALIMPSEST.txt](LICENSE-PALIMPSEST.txt) for full details.
+
+== Acknowledgments
+
+- Fact-checking databases and APIs
+- spaCy and Hugging Face for NLP models
+- Open-source community
+
+== RSR Framework Compliance
+
+This project follows the *Rhodium Standard Repository (RSR)* framework for high-quality, maintainable open source software.
+
+*Current Status*: Platinum Level ⭐⭐⭐⭐
+
+Run compliance check:
+```bash
+just validate-rsr
+= or
+./scripts/check-rsr-compliance.sh
+```
+
+=== RSR Standards Met
+
+✅ *Documentation*: Complete (README, SECURITY, CODE_OF_CONDUCT, CONTRIBUTING, MAINTAINERS, CHANGELOG)
+✅ *.well-known*: RFC 9116 security.txt, ai.txt, humans.txt
+✅ *Build System*: justfile with 30+ recipes
+✅ *Testing*: Comprehensive test suites
+✅ *CI/CD*: GitHub Actions workflows
+✅ *Security*: Vulnerability disclosure, dual licensing
+✅ *Community*: TPCF governance model
+✅ *Type Safety*: Rust + ReScript + Elixir (compile-time guarantees)
+✅ *WASM*: WebAssembly modules for performance
+✅ *Distributed*: CRDT-based eventual consistency
+✅ *Containerization*: Podman/Docker support
+
+== Support
+
+- *Documentation*: [docs/](docs/)
+- *Issues*: [GitHub Issues](https://github.com/hyperpolymath/social-media-polygraph/issues)
+- *Discussions*: [GitHub Discussions](https://github.com/hyperpolymath/social-media-polygraph/discussions)
+- *Security*: See [SECURITY.md](SECURITY.md)
+- *Humans*: See [.well-known/humans.txt](.well-known/humans.txt)
+
+== Roadmap
+
+- [ ] Real-time claim monitoring
+- [ ] Multi-language support
+- [ ] Mobile applications
+- [ ] Enhanced ML models
+- [ ] Integration with more fact-checking services
+- [ ] Advanced analytics dashboard
+- [ ] API webhooks
+- [ ] Export functionality (PDF, CSV reports)
+
+---
+
+Built with ❤️ for a more informed internet

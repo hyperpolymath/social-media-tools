@@ -1,0 +1,37 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --allow-env --watch src/main.ts",
+    "build": "deno run --allow-net --allow-read --allow-write --allow-env build.ts",
+    "preview": "deno run --allow-net --allow-read dist/server.js",
+    "rescript": "rescript",
+    "rescript:watch": "rescript build -w"
+  },
+  "imports": {
+    "@/": "./src/",
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "graphql": "https://esm.sh/graphql@16.8.1",
+    "@apollo/client": "https://esm.sh/@apollo/client@3.8.8",
+    "rescript": "npm:rescript@^11.0.0"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "dom", "dom.iterable"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  "fmt": {
+    "options": {
+      "useTabs": false,
+      "lineWidth": 100,
+      "indentWidth": 2,
+      "singleQuote": false,
+      "proseWrap": "preserve"
+    }
+  }
+}

@@ -1,0 +1,95 @@
+= Social Media Ethics Monitor
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
+
+[.lead]
+Automated monitoring of social media platform policies, analysis, and guided outreach for NUJ members; replaces the manual £18k/year watchboard with a fully instrumented AI-assisted stack.
+
+== Stack Snapshot
+
+[columns="1,1,1"]
+|===
+| **Layer** | **Technologies** | **Notes**
+| Languages & Runtimes | Rust, ReScript (Deno), Elixir, Julia, Ada/SPARK, Clojure, CUE, Zig/Idris | Covers systems scraping, NLP, dashboarding, temporal stores, and formally verified adapters.
+| Protocols & APIs | HTTPS + REST, GraphQL federation, gRPC, SMTP/Webhooks, JSON-RPC 2.0, Redis/Dragonfly protocol, Prometheus exposition, Loki structured logs | Each service exposes a typed interface and is monitored end-to-end.
+| Data & Cache | SurrealDB core + VerisimDB time-series, Virtuoso RDF + SPARQL, XTDB bitemporal audit log, Dragonfly cache (25× faster Redis-compatible), Redis job queues, Loki/Grafana/Prometheus | Multi-model core data plus immutable time-series, semantic, and historical compliance data with tiered caching and observability.
+|===
+
+== Service Map & Responsibilities
+
+[cols="1,1,1,1",options="header"]
+|===
+| Service | Language / Runtime | Port | Primary Responsibilities
+| Collector | Rust (Axum + SQLx + Tokio) | 3001 | Concurrent platform scraping, change detection, integrity checks, Prometheus metrics.
+| Analyzer | ReScript compiled for Deno + Rust WASM NLP helpers | 3002 | Type-safe policy analysis, GPT guidance drafting, severity tagging, agent auth federation.
+| Publisher | Deno (JavaScript/TypeScript-free) | 3003 | Secure email/webhook delivery, rollback control, analytics ingestion.
+| Dashboard | Elixir + Phoenix LiveView | 4000 | Approval workflows, real-time monitoring, guardrail control panel.
+| Gateway | ReScript/Deno (GraphQL federation) | 8080 | Unified API, security policies, schema stitching, orchestrates Analyzer/Publisher.
+| Agent Swarm & Observatories | Deno + PESTLE agents (Deno) | internal | LangChain-style actors, policy analyst bots, observatory connectors (GDPR, IFEX, Ranking 19).
+| Scraper | Julia | - | High-throughput scraping (1k+ concurrent connections) for deep data ingestion.
+| TUI | Ada/SPARK | - | Safety-critical terminal interface for critical overrides.
+| Temporal Storage | Clojure + XTDB | - | Valid-time / transaction-time audit trail.
+| RDF Observatory | Virtuoso | - | Semantic PESTLE knowledge graph (SPARQL API).
+|===
+
+== Containerization & Orchestration
+
+This repo now builds a **Chainguard-based container** (multi-stage) rather than relying on Podman compose. The container recipe is assembled from the ecosystem services you already maintain:
+
+* **Svalinn** – edge gateway + `svalinn-compose` CLI (Deno/ReScript) that validates JSON Schema and policy before letting deployments run.
+* **Cerro Torre** – formal container builder (Ada/Rust) that signs SBOMs, attestations, and image bindings required by the verified container spec.
+* **Selur** – the orchestration CLI that replaces Podman compose (`selur-compose`), coordinates service graphs, and integrates with Svalinn/Vörðr.
+* **Vörðr** – runtime engine (Rust/Idris) that executes containers with verified attestation + RBAC policy.
+
+The new `Containerfile` (see `containerfiles/chainguard.Containerfile`) will:
+
+. use `cgr.dev/chainguard/wolfi-base:3.20` as the final runtime so the stack ships on a Chainguard-approved base that still runs Deno/Elixir/Julia/Ada tooling.
+. pull build artifacts from the collector (Rust), analyzer (Deno/ReScript), publisher (Deno), dashboard (Elixir), scraper (Julia), and Ada TUI.
+. leverage BuildKit `--mount=type=bind` + the `tools/scripts/container-build.sh` helper so the local Eclipse clones of Svalinn, Cerro Torre, Selur, and Vörðr contribute verified binaries without hitting the public GitHub network.
+. stage artifacts via `cerro-torre` containerfiles in a reproducible pipeline.
+. expose ports 3001/3002/3003/4000 for internal mapping while `selur-compose` wires the services together through Svalinn/Vörðr.
+
+`just container-build` (calls `tools/scripts/container-build.sh`) tags the resulting `.ctp` bundle as `ghcr.io/hyperpolymath/social-media-monitor:latest`, accepts `LOCAL_REPOS` (default `/var/mnt/eclipse/repos`), and keeps `docker buildx`/BuildKit as the canonical builder.
+
+`compose.toml` now describes the `nuj-stack` service—based on the Chainguard bundle—and the SurrealDB/VerisimDB + Dragonfly/Redis + Prometheus/Grafana/Loki data fabric. `selur-compose` reads this file to start the verified containers; legacy Podman compose files have been archived under `docs/legacy/podman`.
+
+Selur-compose governs lifecycle (`selur-compose up`, `down`, `scale`, `logs`, `config`) and obeys the verified container spec enforced by Svalinn. The `selur-compose` repository already documents 25+ commands, graph resolution, and integration with Svalinn, Vörðr, and Cerro Torre; our repo uses it as the orchestration plane.
+
+== Data Fabric & Observability
+
+* **SurrealDB + VerisimDB** – SurrealDB is the primary multi-model store for platform metadata, policy documents, and member guidance, while VerisimDB captures immutable, high-resolution time-series (policy snapshots, change events) with the same schema definitions.
+* **Virtuoso RDF triple store** – PESTLE observatory knowledge graph, SPARQL endpoints, Linked Data for guidance provenance.
+* **XTDB (Clojure)** – complete bitemporal audit trail that supports full history queries, essential for compliance reviews.
+* **Dragonfly cache** – replaces Redis for high-throughput caching, job coordination, and pub/sub; retains Redis protocol for compatibility.
+* **Redis job queues** – short-lived work items (scrape triggers, analyzer tasks) and Celery-like coordination.
+* **Prometheus + Grafana + Loki** – metrics, dashboards, and log aggregation; every service exposes Prometheus metrics and structured JSON logs.
+
+== Development Flow & CLI
+
+[cols="1,1"]
+|===
+| Command | Purpose
+| `just setup` | Configure dev dependencies, envvars, generate Chainguard stage definitions, run `guix pull` (hyperpolymath channel), and enable the `flake.nix` Nix fallback shell.
+| `just dev` | Launch local dev mode via `selur-compose` connected to Svalinn/Vörd; exposes the dashboard on port 4000.
+| `just test` | Runs per-service suites (Rust, ReScript, Elixir, Julia, Ada) plus integration checks.
+| `just container-build` | Runs `tools/scripts/container-build.sh`, builds the Chainguard Containerfile with local Eclipse repos, and tags `ghcr.io/hyperpolymath/social-media-monitor:latest.ctp`.
+| `selur-compose up` | Start the integrated stack (see `compose.toml`), managed by Svalinn policy gating and Vörðr runtime enforcement.
+| `just logs <service>` | Tail structured logs via Loki/Grafana pipeline; reference `tools/scripts/dev-logs.sh` for specifics.
+|===
+
+The `tools/scripts/` directory now orchestrates container-aware dev servers (no Podman). Each script calls the new `selur-compose` CLI or the Chainguard build; the repo keeps the legacy Podman artifacts for reference only and does not invoke them in production.
+
+== Documentation & Compliance
+
+* `ARCHITECTURE.md` – detailed microservice diagrams and agent swarm description.
+* `CLAUDE.md` – project narrative, guardrail rationale, and NUJ alignment.
+* `RSR_COMPLIANCE.md` – compliance scorecard; soon to be augmented with an RSR-style outline tailored to this stack.
+* Service READMEs – `services/*/README.md` entries describe language-specific contracts, and `infrastructure/database/README.md` explains the schema.
+* `docs/` – repository-level documentation; this README will soon link to the generated `docs/just-cookbook.adoc` + `docs/man/social-media-monitor.1` once we add the Justfile cookbook.
+
+== Next Up
+
+1. Ship the Chainguard Containerfile referencing Cerro Torre and Svalinn artifacts.
+2. Document the complete stack in `docs/` (`just cookbook`, CLI manual) and produce the RSR-style outline.
+3. Surface troubleshooting steps (logs, metrics, guardrails) in the dashboard README for reviewers.
+
+Let me know if you would like me to generate the Containerfile/selur-compose spec next or review any of the supporting Eclipse repos directly (Svalinn, Cerro Torre, Selur, Vörðr).

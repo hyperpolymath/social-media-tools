@@ -1,0 +1,36 @@
+= social-media-polygraph - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{social-media-polygraph_2025,
+  author = {Polymath, Hyper},
+  title = {social-media-polygraph},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/social-media-polygraph},
+  license = {AGPL-3.0-or-later}
+}
+----
+
+== Harvard Style
+
+Polymath, H. (2025) _social-media-polygraph_ [Computer software]. Available at: https://github.com/hyperpolymath/social-media-polygraph
+
+== OSCOLA
+
+Hyper Polymath, 'social-media-polygraph' (2025) <https://github.com/hyperpolymath/social-media-polygraph>
+
+== MLA
+
+Polymath, Hyper. "social-media-polygraph." 2025, github.com/hyperpolymath/social-media-polygraph.
+
+== APA 7
+
+Polymath, H. (2025). _social-media-polygraph_ [Computer software]. GitHub. https://github.com/hyperpolymath/social-media-polygraph
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

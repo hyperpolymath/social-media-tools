@@ -1,0 +1,53 @@
+= Just Cookbook
+
+This cookbook highlights the commands you can run through `just` now that the Chainguard + selur-compose workflow is in place.
+
+== Development
+
+[cols="1,1,1",options="header"]
+|===
+| Recipe | Command | Description
+| `setup` | `just setup` | Install language toolchains, generate Chainguard stage definitions, and copy `.env`.
+| `dev` | `just dev` | Launch the integrated stack via `selur-compose` (Svalinn policy gating + Vörðr runtime).
+| `stop` | `just stop` | Tear down the dev stack and clear cached artifacts.
+| `logs` | `just logs <service>` | Tail structured Loki logs per service (collector, analyzer, publisher, dashboard).
+|===
+
+== Quality & Testing
+
+[cols="1,1",options="header"]
+|===
+| Recipe | Command | Notes
+| `test` | `just test` | Runs Rust, ReScript, Elixir, Julia, and Ada unit suites, plus integration assertions.
+| `lint` | `just lint` | Executes `cargo clippy`, `rescript build`, `deno fmt/lint`, and `mix format --check`.
+| `format` | `just format` | Reformats Go, ReScript, Deno, and Elixir assets to match style guides.
+| `container-build` | `just container-build` | Runs `tools/scripts/container-build.sh`, builds the Chainguard Containerfile with local Eclipse repos, and emits `ghcr.io/hyperpolymath/social-media-monitor:latest.ctp`.
+|===
+
+== Operations
+
+[cols="1,1",options="header"]
+|===
+| Recipe | Command | Purpose
+| `migrate` | `just migrate` | Run database migrations with `tools/cli/migrate.sh`.
+| `backup` | `just backup` | Capture SurrealDB/VerisimDB snapshots via the container’s export API.
+| `deploy-staging` | `just deploy-staging` | Trigger GitHub workflow for staging deploys; the workflow ultimately provokes Selur/Vörðr actions.
+| `deploy-prod` | `just deploy-prod` | Trusted deploy with manual confirmation before calling `gh workflow run`.
+|===
+
+== Selur Compose Helpers
+
+The `selur-compose` tool (from https://github.com/hyperpolymath/selur-compose) is the sanctioned orchestration CLI.
+
+[cols="1,1",options="header"]
+|===
+| Command | Description
+| `selur-compose up` | Start the full stack, enforce attestation via Svalinn, and run services on the Chainguard image.
+| `selur-compose down` | Tear down services and release Vörðr resources.
+| `selur-compose logs <service>` | Stream service logs through Loki.
+| `selur-compose config` | Validate the compose graph and policy annotations.
+| ===
+
+== Selur Compose Graph
+
+`compose.toml` declares the `nuj-stack` bundle plus the SurrealDB/VerisimDB + Dragonfly/Redis + Prometheus/Grafana/Loki fabric that `selur-compose` should start. Inspect the resolved graph with `selur-compose config`, and adjust environment overrides via `SELUR_COMPOSE_FILE`/`SELUR_PROJECT_NAME` if you need alternative workflows.

@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: MPL-2.0-or-later
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - uses: actions/checkout@v6.0.1
+
+      - name: Deploy to ${{ github.event.inputs.environment }}
+        run: |
+          echo "Deploying to ${{ github.event.inputs.environment }}"
+          echo "This would typically:"
+          echo "1. Pull latest images from GHCR"
+          echo "2. Update docker-compose/podman-compose on target server"
+          echo "3. Run database migrations"
+          echo "4. Restart services with zero-downtime"
+          echo "5. Run smoke tests"
+          echo "6. Notify team"
+
+      - name: Notify deployment
+        if: always()
+        run: |
+          echo "Deployment ${{ job.status }} to ${{ github.event.inputs.environment }}"

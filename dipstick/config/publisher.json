@@ -1,0 +1,26 @@
+{
+  "email": {
+    "from_name": "NUJ Social Media Monitor",
+    "reply_to": "comms@nuj.org.uk",
+    "batch_size": 100,
+    "rate_limit_per_hour": 1000,
+    "retry_failed": true,
+    "retry_attempts": 3
+  },
+  "safety": {
+    "approval_required": true,
+    "grace_period_minutes": 5,
+    "test_group_required": true,
+    "rollback_enabled": true,
+    "max_recipients_without_approval": 100
+  },
+  "templates": {
+    "default": "email_template.html",
+    "urgent": "email_urgent_template.html"
+  },
+  "tracking": {
+    "open_tracking": true,
+    "click_tracking": true,
+    "hash_recipients": true
+  }
+}

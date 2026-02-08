@@ -1,0 +1,6 @@
+Contact: security@hyperpolymath.org
+Encryption: https://github.com/Hyperpolymath/social-media-dipstick/security
+Preferred-Languages: en
+Policy: https://github.com/Hyperpolymath/social-media-dipstick/SECURITY.md
+Expires: 2026-12-31
+Acknowledgments: CVE program (nuj-monitor)

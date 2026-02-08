@@ -1,0 +1,4 @@
+(channel
+ (name 'hyperpolymath-social-media-dipstick)
+ (url 'https://github.com/hyperpolymath/guix-channel.git)
+ (branch 'main))

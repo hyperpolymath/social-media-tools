@@ -1,0 +1,18 @@
+[deps]
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+Gumbo = "708ec375-b3d6-5a57-a7ce-8257bf98657a"
+Cascadia = "54eefc05-d75b-58de-a785-1a3403f0919f"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Distributed = "8ba89e20-285c-5b6f-9357-94700520ee1b"
+SharedArrays = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+
+[compat]
+HTTP = "1"
+Gumbo = "0.8"
+Cascadia = "1"
+JSON3 = "1"
+DataFrames = "1"

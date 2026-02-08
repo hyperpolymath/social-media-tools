@@ -1,0 +1,17 @@
+= Social Media Tools
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Social media analysis and verification tools.
+
+== Components
+
+* `dipstick/` - Social media health metrics and monitoring
+* `polygraph/` - Social media authenticity verification
+
+== License
+
+PMPL-1.0-or-later
+
+== Author
+
+Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>

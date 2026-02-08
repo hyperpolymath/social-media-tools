@@ -1,0 +1,3 @@
+Team: NUJ Social Media Ethics Monitor
+Tech: Rust, ReScript, Elixir, Julia, Ada, Clojure
+Docs: https://github.com/Hyperpolymath/social-media-dipstick

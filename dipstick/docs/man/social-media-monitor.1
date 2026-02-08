@@ -1,0 +1,52 @@
+.TH SOCIAL-MEDIA-MONITOR 1 "February 2026" "Social Media Ethics Monitor"
+.SH NAME
+social-media-monitor \- orchestrate and inspect the NUJ Social Media Ethics Monitor stack
+.SH SYNOPSIS
+.B just setup
+.RI " "
+.B just dev
+.RI " "
+.B just container-build
+.RI " "
+.B selur-compose up
+.SH DESCRIPTION
+The Social Media Ethics Monitor now runs from a Chainguard-based container and is orchestrated by
+.BR selur-compose
+with enforcement from
+.BR Svalinn
+and runtime execution in
+.BR Vörðr .
+This man page summarises the primary commands used during development and deployment.
+.SH COMMANDS
+.TP
+.B just setup
+Prepares toolchains, copies `.env.example` to `.env`, and writes Chainguard stage files that reference the Cerro Torre attestations.
+.TP
+.B just dev
+Starts the entire stack (`collector`, `analyzer`, `publisher`, `dashboard`, `scraper`, `xtdb`, `virtuoso`, `dragonfly cache`) through
+.BR selur-compose
+and exposes port 4000 for the dashboard.
+.TP
+.B just container-build
+Runs `tools/scripts/container-build.sh`, which builds the Chainguard Containerfile from the local Eclipse clones and tags `ghcr.io/hyperpolymath/social-media-monitor:latest.ctp`.
+.TP
+.B selur-compose up
+Launches the services declared in `compose.toml`, validated by Svalinn policy rules, and executed by Vörðr.
+.TP
+.B selur-compose down
+Gracefully stops containers, removes runtimes from Vörðr, and clears Svalinn attestations for the session.
+.TP
+.B selur-compose logs <service>
+Streams structured logs (Loki format) for the requested service and includes Grafana trace identifiers.
+.SH FILES
+.TP
+.B docs/just-cookbook.adoc
+High-level overview of `just` recipes and their purposes.
+.TP
+.B docs/man/social-media-monitor.1
+This manual page.
+.SH SEE ALSO
+.BR just (1),
+.BR selur-compose (1),
+.BR Svalinn (1),
+.BR Vörðr (1).

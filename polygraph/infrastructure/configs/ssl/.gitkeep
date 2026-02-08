@@ -1,0 +1,2 @@
+# This file ensures the ssl directory exists in git
+# Actual certificate files should never be committed

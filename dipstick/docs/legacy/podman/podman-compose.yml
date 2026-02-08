@@ -1,0 +1,492 @@
+version: '3.8'
+
+# NUJ Social Media Ethics Monitor - Podman Compose Configuration
+# Platform: Windows Enterprise compatible
+# Purpose: Orchestrate all microservices with isolated failure domains
+
+networks:
+  nuj-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  grafana-data:
+    driver: local
+  prometheus-data:
+    driver: local
+  loki-data:
+    driver: local
+
+services:
+  # ====================
+  # DATA LAYER
+  # ====================
+
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    container_name: nuj-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nuj_monitor
+      POSTGRES_USER: ${POSTGRES_USER:-nuj_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+      TIMESCALEDB_TELEMETRY: "off"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./infrastructure/database/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+      - ./infrastructure/database/migrations:/docker-entrypoint-initdb.d/migrations:ro
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.10
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-nuj_admin} -d nuj_monitor"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+
+  redis:
+    image: redis:7-alpine
+    container_name: nuj-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-changeme}
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.11
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  # ====================
+  # MICROSERVICES
+  # ====================
+
+  collector:
+    build:
+      context: ./services/collector
+      dockerfile: Dockerfile
+    container_name: nuj-collector
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nuj_admin}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/nuj_monitor
+      REDIS_URL: redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0
+      COLLECTOR_PORT: ${COLLECTOR_PORT:-3001}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      RUST_LOG: ${RUST_LOG:-info}
+      # Platform API Keys (from .env)
+      TWITTER_API_KEY: ${TWITTER_API_KEY}
+      TWITTER_API_SECRET: ${TWITTER_API_SECRET}
+      META_ACCESS_TOKEN: ${META_ACCESS_TOKEN}
+      LINKEDIN_API_KEY: ${LINKEDIN_API_KEY}
+      YOUTUBE_API_KEY: ${YOUTUBE_API_KEY}
+      # Scraping config
+      MAX_CONCURRENT_COLLECTIONS: ${MAX_CONCURRENT_COLLECTIONS:-10}
+      DEFAULT_CHECK_FREQUENCY: ${DEFAULT_CHECK_FREQUENCY:-60}
+      USER_AGENT: "NUJ Social Media Monitor/1.0 (https://nuj.org.uk; monitor@nuj.org.uk)"
+    ports:
+      - "${COLLECTOR_PORT:-3001}:3001"
+    volumes:
+      - ./config/collector.toml:/app/config.toml:ro
+      - ./services/collector:/app:rw
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.20
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  analyzer:
+    build:
+      context: ./services/analyzer
+      dockerfile: Dockerfile
+    container_name: nuj-analyzer
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nuj_admin}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/nuj_monitor
+      REDIS_URL: redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/1
+      ANALYZER_PORT: ${ANALYZER_PORT:-3002}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # AI/NLP Configuration
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4}
+      MIN_CONFIDENCE_THRESHOLD: ${MIN_CONFIDENCE_THRESHOLD:-0.70}
+      # NLP Models
+      SPACY_MODEL: en_core_web_lg
+      TRANSFORMERS_CACHE: /app/.cache/transformers
+    ports:
+      - "${ANALYZER_PORT:-3002}:3002"
+    volumes:
+      - ./config/analyzer.yml:/app/config.yml:ro
+      - ./services/analyzer:/app:rw
+      - ./shared:/app/shared:ro
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.21
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  dashboard:
+    build:
+      context: ./services/dashboard
+      dockerfile: Dockerfile
+    container_name: nuj-dashboard
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ecto://postgres:5432/nuj_monitor
+      REDIS_URL: redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/2
+      PORT: ${DASHBOARD_PORT:-4000}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-changeme_generate_with_mix_phx_gen_secret}
+      PHX_HOST: ${PHX_HOST:-localhost}
+      PHX_SERVER: "true"
+      MIX_ENV: ${MIX_ENV:-prod}
+      # Auth
+      GUARDIAN_SECRET_KEY: ${GUARDIAN_SECRET_KEY:-changeme}
+      # Monitoring
+      ENABLE_LIVE_DASHBOARD: ${ENABLE_LIVE_DASHBOARD:-true}
+    ports:
+      - "${DASHBOARD_PORT:-4000}:4000"
+    volumes:
+      - ./config/dashboard.exs:/app/config/runtime.exs:ro
+      - ./services/dashboard:/app:rw
+      - ./shared:/app/shared:ro
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.22
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  publisher:
+    build:
+      context: ./services/publisher
+      dockerfile: Dockerfile
+    container_name: nuj-publisher
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-nuj_admin}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/nuj_monitor
+      REDIS_URL: redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/3
+      PUBLISHER_PORT: ${PUBLISHER_PORT:-3003}
+      NODE_ENV: ${NODE_ENV:-production}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # Email Configuration
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_FROM: ${SMTP_FROM:-monitor@nuj.org.uk}
+      # Safety Configuration
+      APPROVAL_REQUIRED: ${APPROVAL_REQUIRED:-true}
+      GRACE_PERIOD_MINUTES: ${GRACE_PERIOD_MINUTES:-5}
+      TEST_GROUP_EMAILS: ${TEST_GROUP_EMAILS:-comms@nuj.org.uk}
+      ENABLE_ROLLBACK: ${ENABLE_ROLLBACK:-true}
+    ports:
+      - "${PUBLISHER_PORT:-3003}:3003"
+    volumes:
+      - ./config/publisher.json:/app/config.json:ro
+      - ./services/publisher:/app:rw
+      - ./shared:/app/shared:ro
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.23
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  # ====================
+  # MONITORING & OBSERVABILITY
+  # ====================
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: nuj-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=90d'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    ports:
+      - "${PROMETHEUS_PORT:-9090}:9090"
+    volumes:
+      - ./infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.30
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: nuj-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-changeme}
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:3000}
+      GF_INSTALL_PLUGINS: grafana-clock-panel,grafana-simple-json-datasource
+    ports:
+      - "${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infrastructure/monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./infrastructure/monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.31
+    depends_on:
+      - prometheus
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+
+  loki:
+    image: grafana/loki:latest
+    container_name: nuj-loki
+    restart: unless-stopped
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "${LOKI_PORT:-3100}:3100"
+    volumes:
+      - loki-data:/loki
+      - ./infrastructure/monitoring/loki.yml:/etc/loki/local-config.yaml:ro
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.32
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3100/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: nuj-promtail
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/config.yml
+    volumes:
+      - ./infrastructure/monitoring/promtail.yml:/etc/promtail/config.yml:ro
+      - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.33
+    depends_on:
+      - loki
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+  # ====================
+  # UTILITIES
+  # ====================
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: nuj-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@nuj.org.uk}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-changeme}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+      - ./infrastructure/database/pgadmin:/var/lib/pgadmin:rw
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.40
+    depends_on:
+      - postgres
+    profiles:
+      - dev
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: nuj-redis-commander
+    restart: unless-stopped
+    environment:
+      REDIS_HOSTS: local:redis:6379:0:${REDIS_PASSWORD:-changeme}
+    ports:
+      - "${REDIS_COMMANDER_PORT:-8081}:8081"
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.41
+    depends_on:
+      - redis
+    profiles:
+      - dev
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+
+  # ====================
+  # BACKUP & MAINTENANCE
+  # ====================
+
+  backup:
+    image: postgres:15-alpine
+    container_name: nuj-backup
+    restart: "no"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: nuj_monitor
+      POSTGRES_USER: ${POSTGRES_USER:-nuj_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+    volumes:
+      - ./infrastructure/monitoring/backup:/backup:rw
+      - ./infrastructure/monitoring/backup/scripts:/scripts:ro
+    networks:
+      nuj-network:
+        ipv4_address: 172.20.0.50
+    depends_on:
+      - postgres
+    entrypoint: /scripts/backup.sh
+    profiles:
+      - backup
+
+# ====================
+# HEALTHCHECK ENDPOINTS
+# ====================
+# All services expose /health for monitoring
+# - Collector: http://localhost:3001/health
+# - Analyzer: http://localhost:3002/health
+# - Dashboard: http://localhost:4000/api/health
+# - Publisher: http://localhost:3003/health
+# - Prometheus: http://localhost:9090/-/healthy
+# - Grafana: http://localhost:3000/api/health
+# - Loki: http://localhost:3100/ready

@@ -1,0 +1,36 @@
+# Analyzer Service Configuration
+
+nlp:
+  spacy_model: en_core_web_lg
+  max_text_length: 100000
+
+openai:
+  model: gpt-4
+  temperature: 0.3
+  max_tokens: 2000
+  timeout_seconds: 30
+
+analysis:
+  min_confidence_threshold: 0.70
+  severity_levels:
+    - critical
+    - high
+    - medium
+    - low
+    - unknown
+
+  auto_notify_thresholds:
+    critical: true
+    high: true
+    medium: false
+    low: false
+
+processing:
+  max_concurrent_analyses: 5
+  batch_size: 10
+  poll_interval_seconds: 30
+
+guidance:
+  auto_generate: true
+  require_review: true
+  max_related_changes: 10

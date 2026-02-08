@@ -1,0 +1,103 @@
+= Social Media Ethics Monitor – RSR Outline
+image:https://img.shields.io/badge/RSR-Infrastructure-cd7f32[RSR Infrastructure]
+image:https://img.shields.io/badge/Phase-Maintenance-brightgreen[Phase]
+image:https://img.shields.io/badge/Container-Chainguard-orange[Chainguard]
+:toc:
+:toclevels: 3
+
+// SPDX-License-Identifier: MPL-2.0-or-later
+
+== Overview
+
+The NUJ Social Media Ethics Monitor automates platform policy detection, analysis, and guided response so National Union of Journalists members can react to policy changes with confidence. It replaces an £18k a year manual cadence with a Chainguard-based, selur-compose managed stack that draws on the verified container ecosystem (Svalinn, Cerro Torre, Vörðr, Selur). Continuous monitoring, AI-assisted guidance drafting, and human-in-the-loop approvals happen inside a hardened environment that enforces 19-layer guardrails.
+
+== Quick Start
+
+[source,bash]
+----
+# Clone the repo
+git clone https://github.com/Hyperpolymath/social-media-dipstick.git
+cd social-media-dipstick
+
+# Bootstrap environment (Chainguard stages, envvars)
+just setup
+
+# Build the multi-stage container, collect attestations, and stage artifacts
+just container-build
+
+# Start the stack through Selur, gate with Svalinn, run inside Vörðr
+selur-compose up
+
+# Stream logs or open the dashboard
+selur-compose logs dashboard
+open http://localhost:4000
+----
+
+== Architecture Sketch
+
+=== Verified Container Pipeline
+
+1. **Cerro Torre** builds container artifacts, signs SBOMs, and publishes attestations (`containerfiles/chainguard.Containerfile` references).
+2. **Selur** reads the graph, topologically sorts services, and generates compose manifests interpreted by `selur-compose`.
+3. **Svalinn** enforces JSON Schema, OAuth2/JWT, and policy rules before letting deployment requests reach Vörðr.
+4. **Vörðr** executes containers with RBAC plus the verified-container-spec attestation chain.
+
+=== Service Mesh
+
+[cols="1,1,1",options="header"]
+|===
+| Service | Language | Intent
+| Collector | Rust (Axum + SQLx) | Platform scraping, integrity checks, Prometheus metrics.
+| Analyzer | ReScript (Deno) + Rust WASM | NLP severity scoring, GPT guidance drafts, GraphQL federation.
+| Publisher | Deno | Email/webhook delivery with rollback safeguards.
+| Dashboard | Elixir + LiveView | Approval workflows, guardrail controls, observability.
+| Gateway | ReScript/Deno | Federated GraphQL endpoint, schema stitching.
+| Agent Swarm | Deno | LangChain-style policy analyst bots, PESTLE observatories.
+| Scraper | Julia | High-throughput ingestion (1k+ concurrent connections).
+| TUI | Ada/SPARK | Safety-critical command console with SPARK guarantees.
+| Temporal Store | Clojure + XTDB | Bitemporal compliance history.
+| RDF Observatory | Virtuoso | Semantic graph for PESTLE reasoning.
+| Dragonfly | Fast cache | Redis-compatible caching + pub/sub.
+|===
+
+== Data & Observability Fabric
+
+* **Transactional Core** – SurrealDB stores the multi-model policy documents, credentials, and guidance drafts, while VerisimDB feeds the time-series policy snapshots and change events with immutable batching.
+* **Semantic Knowledge** – Virtuoso RDF triples + SPARQL for PESTLE intelligence.
+* **Audit Trail** – XTDB stores valid and transaction time for every change, enabling point-in-time reviews.
+* **Caching & Queueing** – Dragonfly caches, Redis-style job queues, and Celery-like orchestration loops.
+* **Monitoring** – Prometheus (metrics), Grafana dashboards, Loki logs, and structured observability for each service.
+
+== Compliance & Governance
+
+* **Safety Guardrails** – 19 layers documented in `README.adoc` (approval controls, auto-rollback, anomaly detection, disaster recovery).
+* **Community Governance** – MAINTAINERS, CODE_OF_CONDUCT, TPCF (three perimeters) with lazy consensus and advancement criteria.
+* **Security** – SECURITY.md details CVSS scoring, 90-day disclosure, and emergency contact; `.well-known` directory supplies `security.txt`, `ai.txt`, and `humans.txt`.
+* **RSR Compliance Scorecard** – `RSR_COMPLIANCE.md` tracks the Gold-level score (86%), highlights missing flake.nix + test suites, and maps future Platinum steps.
+* **Approved Stack** – Languages limited to Rust, ReScript, Elixir, Julia, Ada/SPARK, Clojure, CUE, and formally verified Zig/Idris bindings; no Python/TypeScript outside approved scopes.
+
+== Directory Structure Highlights
+
+[cols="1,2",options="header"]
+|===
+| Path | Purpose
+| `containerfiles/chainguard.Containerfile` | Chainguard multi-stage container spec pulling artifacts from subservices.
+| `compose.toml` | `selur-compose` graph declaring the `nuj-stack` bundle plus Surreal/Verisim/Dragonfly and monitoring support.
+| `tools/scripts/container-build.sh` | Helper that calls `docker buildx` on the Containerfile, mounts the Eclipse repos, and tags `ghcr.io/hyperpolymath/social-media-monitor:latest.ctp`.
+| `services/` | Multi-language services with localized READMEs (Rust/Elixir/ReScript/Julia/Ada/Clojure).
+| `docs/just-cookbook.adoc` | Manual for `just` commands.
+| `docs/man/social-media-monitor.1` | CLI manual for `just` + `selur-compose`.
+| `RSR_COMPLIANCE.md` | Compliance scorecard and path to Platinum.
+| `RSR_OUTLINE.adoc` | This outline.
+| `.well-known/` | RFC metadata per security guidelines.
+|===
+
+== Badge & Stage Matrix
+
+The project stages are tracked via `STATE.scm` and badges generated through `just badges standard`. Each service mirrors the RSR template’s multi-language requirements and uses the Chainguard base to stay within the verified container spec.
+
+== Next Milestones
+
+1. **Complete Chainguard Containerfile** – reference Cerro Torre, Svalinn, Vörðr, and Selur artifacts for reproducible builds.
+2. **Selur-Compose Review** – document the orchestration graph, plugins, and scaling commands.
+3. **Testing Pipeline Completion** – add per-service unit/integration suites and an E2E harness before migrating to Platinum (target 95% compliance).

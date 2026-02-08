@@ -1,0 +1,41 @@
+# Collector Service Configuration
+
+[server]
+port = 3001
+workers = 4
+
+[collection]
+max_concurrent = 10
+default_frequency_minutes = 60
+request_timeout_seconds = 30
+retry_attempts = 3
+retry_delay_seconds = 5
+
+[platforms.twitter]
+enabled = true
+rate_limit_per_hour = 100
+api_version = "v2"
+
+[platforms.facebook]
+enabled = true
+rate_limit_per_hour = 200
+
+[platforms.instagram]
+enabled = true
+rate_limit_per_hour = 200
+
+[platforms.linkedin]
+enabled = true
+rate_limit_per_hour = 100
+
+[platforms.tiktok]
+enabled = false
+use_scraping = true
+
+[platforms.youtube]
+enabled = true
+rate_limit_per_hour = 1000
+
+[platforms.bluesky]
+enabled = true
+rate_limit_per_hour = 500

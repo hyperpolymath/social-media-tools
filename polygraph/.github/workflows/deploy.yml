@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: MPL-2.0-or-later
+name: Deploy
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Podman
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install podman
+
+      - name: Build images
+        run: |
+          cd backend && podman build -t polygraph-backend:${{ github.ref_name }} -f Containerfile .
+          cd ../frontend && podman build -t polygraph-frontend:${{ github.ref_name }} -f Containerfile .
+
+      - name: Login to container registry
+        run: |
+          echo "${{ secrets.REGISTRY_PASSWORD }}" | podman login -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin ${{ secrets.REGISTRY_URL }}
+
+      - name: Push images
+        run: |
+          podman tag polygraph-backend:${{ github.ref_name }} ${{ secrets.REGISTRY_URL }}/polygraph-backend:${{ github.ref_name }}
+          podman tag polygraph-frontend:${{ github.ref_name }} ${{ secrets.REGISTRY_URL }}/polygraph-frontend:${{ github.ref_name }}
+          podman push ${{ secrets.REGISTRY_URL }}/polygraph-backend:${{ github.ref_name }}
+          podman push ${{ secrets.REGISTRY_URL }}/polygraph-frontend:${{ github.ref_name }}
+
+      # Add deployment steps here (e.g., to Kubernetes, cloud platform, etc.)

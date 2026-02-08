@@ -1,0 +1,102 @@
+openapi: 3.0.3
+info:
+  title: NUJ Social Media Ethics Monitor API
+  version: 0.1.0
+  description: API for monitoring social media platform policies
+
+servers:
+  - url: http://localhost:3001
+    description: Collector Service
+  - url: http://localhost:3002
+    description: Analyzer Service
+  - url: http://localhost:3003
+    description: Publisher Service
+  - url: http://localhost:4000
+    description: Dashboard Service
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  service:
+                    type: string
+                  timestamp:
+                    type: string
+
+  /api/platforms:
+    get:
+      summary: List monitored platforms
+      responses:
+        '200':
+          description: List of platforms
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  platforms:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Platform'
+
+  /api/changes:
+    get:
+      summary: List policy changes
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: List of changes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  changes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PolicyChange'
+
+components:
+  schemas:
+    Platform:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        display_name:
+          type: string
+        monitoring_active:
+          type: boolean
+
+    PolicyChange:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        detected_at:
+          type: string
+          format: date-time
+        severity:
+          type: string
+          enum: [critical, high, medium, low, unknown]
+        change_summary:
+          type: string

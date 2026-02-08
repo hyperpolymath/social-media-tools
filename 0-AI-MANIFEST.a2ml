@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Social Media Tools - AI Agent Manifest
+# Universal entry point for AI agents (Claude, Gemini, OpenAI, etc.)
+
+repo: social-media-tools
+owner: hyperpolymath
+type: monorepo
+
+## Canonical File Locations (CRITICAL INVARIANTS)
+
+SCM_FILES: .machine_readable/
+  - STATE.scm       # Project state, tasks, progress
+  - META.scm        # Architecture decisions, practices
+  - ECOSYSTEM.scm   # Ecosystem position, relationships
+  - AGENTIC.scm     # AI/bot integrations
+  - NEUROSYM.scm    # Neurosymbolic components
+  - PLAYBOOK.scm    # Development workflow
+
+WORKFLOWS: .github/workflows/
+CONTRACTS: contractiles/
+BOT_DIRECTIVES: .bot_directives/
+
+## Critical Invariants (NEVER VIOLATE)
+
+1. SCM files ONLY in .machine_readable/ (NEVER in root)
+2. All original code uses PMPL-1.0-or-later license
+3. Follow RSR template structure
+4. No npm/bun/TypeScript (use Deno/ReScript)
+5. Workflow permissions: read-all at workflow level
+
+## Repository Structure
+
+```
+social-media-tools/
+├── dipstick/               # Social media content analysis
+├── polygraph/              # Fact-checking framework
+├── .machine_readable/      # SCM checkpoint files
+├── .github/workflows/      # CI/CD (17 standard workflows)
+└── contractiles/           # Formal contracts (k9, dust, lust, must, trust)
+```
+
+## Session Lifecycle Hooks
+
+on-enter:
+  1. Read this manifest FIRST
+  2. Read .machine_readable/STATE.scm (current status)
+  3. Read .machine_readable/ECOSYSTEM.scm (relationships)
+  4. Read .machine_readable/META.scm (architecture)
+  5. Acknowledge canonical locations
+
+on-exit:
+  1. Update STATE.scm with progress
+  2. Update ECOSYSTEM.scm if integrations changed
+  3. Update META.scm if architecture changed
+
+## Integration Points
+
+- MCP Server: mcp-repo-guardian (hard enforcement)
+- FUSE Wrapper: repo-guardian-fs (universal enforcement)
+- CI/CD: Hypatia neurosymbolic scanning
+- Bots: gitbot-fleet (rhodibot, echidnabot, etc.)
+
+## License
+
+PMPL-1.0-or-later (Palimpsest License)

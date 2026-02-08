@@ -1,0 +1,69 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Social Media Tools Roadmap
+:toc:
+:toclevels: 3
+
+== Overview
+
+Social Media Tools is a monorepo containing analysis and verification tools for social media researchers and content moderators.
+
+== Components
+
+=== dipstick (40% complete)
+
+*Status:* Active development +
+*Purpose:* Social media content quality analysis tool
+
+*Current features:*
+- Basic content extraction
+- Sentiment analysis pipeline
+- Pattern detection algorithms
+
+*Planned improvements:*
+- Multi-platform API integrations
+- Advanced NLP models
+- Real-time monitoring
+
+=== polygraph (20% complete)
+
+*Status:* Early development +
+*Purpose:* Fact-checking and verification framework
+
+*Current features:*
+- Verification rule DSL (in design)
+- Basic claim extraction
+
+*Planned improvements:*
+- Integration with fact-checking databases
+- Automated evidence gathering
+- Credibility scoring system
+
+== Milestones
+
+=== Phase 1: Core Analysis (Q1 2026)
+- [x] Repository structure
+- [ ] Complete dipstick analysis pipeline
+- [ ] Design polygraph verification DSL
+- [ ] Unit test coverage >80%
+
+=== Phase 2: Integrations (Q2 2026)
+- [ ] Twitter/X API client
+- [ ] Reddit API client
+- [ ] Mastodon support
+- [ ] Export to standard formats
+
+=== Phase 3: Advanced Features (Q3 2026)
+- [ ] Machine learning models for detection
+- [ ] Network analysis visualization
+- [ ] Reporting dashboard
+
+== Dependencies
+
+- Rust toolchain (stable)
+- ReScript compiler
+- Deno runtime
+- API credentials for social platforms (optional)
+
+== Contributing
+
+See link:CONTRIBUTING.md[Contributing Guidelines].

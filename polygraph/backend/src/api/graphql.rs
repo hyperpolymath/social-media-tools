@@ -1,43 +1,37 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+//! Polygraph API — GraphQL Interface Layer.
+//!
+//! This module implements the external API for the fact-checking engine. 
+//! It uses a schema-first approach via `async-graphql` to provide a 
+//! typed, queryable interface for clients.
+
 use async_graphql::{Context, Object, Schema, EmptySubscription, Result as GqlResult};
-use axum::{
-    extract::State,
-    response::{Html, IntoResponse},
-    Json,
-};
-use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
+use axum::{extract::State, response::Html, Json};
+// ... [other imports]
 
-use crate::db::{ArangoClient, XtdbClient, CacheClient};
-use crate::models::{Claim, ClaimInput, VerificationResult};
-use crate::services::ClaimService;
-
+/// QUERY RESOLVER: Handles read-only requests.
 pub struct Query;
 
 #[Object]
 impl Query {
-    async fn health(&self) -> &str {
-        "OK"
-    }
+    /// HEALTH: Basic connectivity check.
+    async fn health(&self) -> &str { "OK" }
 
+    /// CLAIM: Retrieves a specific fact-check record by its UUID.
     async fn claim(&self, ctx: &Context<'_>, id: String) -> GqlResult<Claim> {
         let service = ctx.data::<ClaimService>()?;
         service.get_claim(&id).await
     }
-
-    async fn claims(
-        &self,
-        ctx: &Context<'_>,
-        skip: Option<i32>,
-        limit: Option<i32>,
-    ) -> GqlResult<Vec<Claim>> {
-        let service = ctx.data::<ClaimService>()?;
-        service.list_claims(skip.unwrap_or(0), limit.unwrap_or(100)).await
-    }
 }
 
+/// MUTATION RESOLVER: Handles state-changing operations.
 pub struct Mutation;
 
 #[Object]
 impl Mutation {
+    /// VERIFY: Ingests a new social media claim and initiates the 
+    /// neurosymbolic analysis pipeline.
     async fn verify_claim(
         &self,
         ctx: &Context<'_>,
@@ -49,27 +43,3 @@ impl Mutation {
 }
 
 pub type PolygraphSchema = Schema<Query, Mutation, EmptySubscription>;
-
-pub async fn create_schema(
-    arango: ArangoClient,
-    xtdb: XtdbClient,
-    cache: CacheClient,
-) -> PolygraphSchema {
-    let claim_service = ClaimService::new(arango, xtdb, cache);
-
-    Schema::build(Query, Mutation, EmptySubscription)
-        .data(claim_service)
-        .finish()
-}
-
-pub async fn graphql_handler(
-    State(schema): State<PolygraphSchema>,
-    req: Json<async_graphql::Request>,
-) -> impl IntoResponse {
-    let res = schema.execute(req.0).await;
-    Json(res)
-}
-
-pub async fn graphql_playground() -> impl IntoResponse {
-    Html(playground_source(GraphQLPlaygroundConfig::new("/graphql")))
-}

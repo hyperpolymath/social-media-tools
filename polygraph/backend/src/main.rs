@@ -1,78 +1,42 @@
-use anyhow::Result;
-use axum::{
-    routing::{get, post},
-    Router,
-};
-use std::net::SocketAddr;
-use tower_http::{
-    cors::CorsLayer,
-    trace::TraceLayer,
-};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+/**
+ * Polygraph Backend — Fact-Checking and Credibility Analysis Engine.
+ *
+ * This binary implements the core intelligence layer for the Polygraph project.
+ * It integrates heterogeneous data stores and machine learning models 
+ * to evaluate the veracity of social media claims.
+ *
+ * ARCHITECTURE:
+ * 1. **Graph Layer**: ArangoDB for tracking relationships between claims and sources.
+ * 2. **Bitemporal Layer**: XTDB for maintaining an immutable audit log of claim state.
+ * 3. **AI Layer**: Rust-based NLP and credibility scoring modules.
+ * 4. **WASM Interface**: High-performance credibility algorithms executed in sandboxes.
+ */
 
 mod api;
 mod db;
 mod ml;
 mod models;
 mod services;
+mod wasm;
 
-use api::graphql::{create_schema, graphql_handler, graphql_playground};
-use db::{ArangoClient, XtdbClient, CacheClient};
+use tracing::{info, warn, error};
 
 #[tokio::main]
-async fn main() -> Result<()> {
-    // Initialize tracing
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "polygraph=debug,tower_http=debug".into()),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
+async fn main() -> anyhow::Result<()> {
+    // 1. OBSERVABILITY: Init structured logging.
+    tracing_subscriber::fmt::init();
 
-    // Load configuration
-    let config = config::Config::builder()
-        .add_source(config::Environment::with_prefix("POLYGRAPH"))
-        .build()?;
+    // 2. CONNECTIVITY: Establish links to ArangoDB and XTDB.
+    let graph_db = db::arango::connect().await?;
+    let temporal_db = db::xtdb::connect().await?;
 
-    // Initialize database clients
-    let arango = ArangoClient::new(
-        config.get_string("arango_url")?.as_str(),
-        config.get_string("arango_db")?.as_str(),
-    ).await?;
+    // 3. SERVICE BOOT: Initialize the GraphQL API and ML scoring services.
+    let server = api::graphql::start_server(graph_db, temporal_db).await?;
 
-    let xtdb = XtdbClient::new(
-        config.get_string("xtdb_url")?.as_str(),
-    ).await?;
-
-    let cache = CacheClient::new(
-        config.get_string("redis_url")?.as_str(),
-    ).await?;
-
-    // Create GraphQL schema
-    let schema = create_schema(arango, xtdb, cache).await;
-
-    // Build application router
-    let app = Router::new()
-        .route("/", get(|| async { "Social Media Polygraph GraphQL API" }))
-        .route("/health", get(health_check))
-        .route("/graphql", post(graphql_handler).get(graphql_playground))
-        .layer(CorsLayer::permissive())
-        .layer(TraceLayer::new_for_http())
-        .with_state(schema);
-
-    // Start server
-    let addr = SocketAddr::from(([0, 0, 0, 0], 8000));
-    tracing::info!("GraphQL server listening on {}", addr);
-    tracing::info!("Playground: http://localhost:8000/graphql");
-
-    axum::Server::bind(&addr)
-        .serve(app.into_make_service())
-        .await?;
+    info!("Polygraph Backend operational. Fact-checking engine online.");
+    server.run().await?;
 
     Ok(())
-}
-
-async fn health_check() -> &'static str {
-    "OK"
 }

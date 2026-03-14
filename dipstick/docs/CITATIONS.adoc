@@ -1,34 +1,34 @@
-= Social-Media-Dipstick - Citation Guide
+= social-media-dipstick - Citation Guide
 :toc:
 
 == BibTeX
 
 [source,bibtex]
 ----
-@software{social-media-dipstick_2025,
-  author = {Polymath, Hyper},
-  title = {Social-Media-Dipstick},
-  year = {2025},
-  url = {https://github.com/hyperpolymath/Social-Media-Dipstick},
-  license = {AGPL-3.0-or-later}
+@software{social-media-dipstick_2026,
+  author = {Jewell, Jonathan D.A.},
+  title = {social-media-dipstick},
+  year = {2026},
+  url = {https://github.com/hyperpolymath/social-media-tools},
+  license = {PMPL-1.0-or-later}
 }
 ----
 
 == Harvard Style
 
-Polymath, H. (2025) _Social-Media-Dipstick_ [Computer software]. Available at: https://github.com/hyperpolymath/Social-Media-Dipstick
+Jewell, J.D.A. (2026) _social-media-dipstick_ [Computer software]. Available at: https://github.com/hyperpolymath/social-media-tools
 
 == OSCOLA
 
-Hyper Polymath, 'Social-Media-Dipstick' (2025) <https://github.com/hyperpolymath/Social-Media-Dipstick>
+Jonathan D.A. Jewell, 'social-media-dipstick' (2026) <https://github.com/hyperpolymath/social-media-tools>
 
 == MLA
 
-Polymath, Hyper. "Social-Media-Dipstick." 2025, github.com/hyperpolymath/Social-Media-Dipstick.
+Jewell, Jonathan D.A. "social-media-dipstick." 2026, github.com/hyperpolymath/social-media-tools.
 
 == APA 7
 
-Polymath, H. (2025). _Social-Media-Dipstick_ [Computer software]. GitHub. https://github.com/hyperpolymath/Social-Media-Dipstick
+Jewell, J.D.A. (2026). _social-media-dipstick_ [Computer software]. GitHub. https://github.com/hyperpolymath/social-media-tools
 
 == See Also
 

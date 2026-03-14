@@ -42,7 +42,7 @@ If you cannot use GitHub Security Advisories, you may email us directly:
 
 | | |
 |---|---|
-| **Email** | jonathan.jewell@open.ac.uk |
+| **Email** | j.d.a.jewell@open.ac.uk |
 | **PGP Key** | [Download Public Key]({{PGP_KEY_URL}}) |
 | **Fingerprint** | `{{PGP_FINGERPRINT}}` |
 
@@ -51,10 +51,10 @@ If you cannot use GitHub Security Advisories, you may email us directly:
 curl -sSL {{PGP_KEY_URL}} | gpg --import
 
 # Verify fingerprint
-gpg --fingerprint jonathan.jewell@open.ac.uk
+gpg --fingerprint j.d.a.jewell@open.ac.uk
 
 # Encrypt your report
-gpg --armor --encrypt --recipient jonathan.jewell@open.ac.uk report.txt
+gpg --armor --encrypt --recipient j.d.a.jewell@open.ac.uk report.txt
 ```
 
 > **⚠️ Important:** Do not report security vulnerabilities through public GitHub issues, pull requests, discussions, or social media.
@@ -367,7 +367,7 @@ When using {{PROJECT_NAME}}, we recommend:
 
 | Purpose | Contact |
 |---------|---------|
-| **Security issues** | [Report via GitHub](https://github.com/hyperpolymath/social-media-tools/security/advisories/new) or jonathan.jewell@open.ac.uk |
+| **Security issues** | [Report via GitHub](https://github.com/hyperpolymath/social-media-tools/security/advisories/new) or j.d.a.jewell@open.ac.uk |
 | **General questions** | [GitHub Discussions](https://github.com/hyperpolymath/social-media-tools/discussions) |
 | **Other enquiries** | See [README](README.md) for contact information |
 

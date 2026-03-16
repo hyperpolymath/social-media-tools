@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Clade declaration — part of the gv-clade-index registry
+# See: https://github.com/hyperpolymath/gv-clade-index
+
+[identity]
+uuid = "ed005160-24df-50ec-8bd0-6415de77538c"
+primary-forge = "github"
+primary-owner = "hyperpolymath"
+canonical-name = "social-media-tools"
+prefixed-name = "dx-social-media-tools"
+
+[clade]
+primary = "dx"
+secondary = []
+assigned = "2026-03-16"
+rationale = ""
+
+[forges]
+github = "hyperpolymath/social-media-tools"
+gitlab = "hyperpolymath/social-media-tools"
+bitbucket = "hyperpolymath/social-media-tools"
+
+[lineage]
+type = "monorepo"
+parent = "Monorepo — social media integrations"
+born = "2026-03-16"

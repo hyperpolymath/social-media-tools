@@ -44,7 +44,7 @@ If you cannot use GitHub Security Advisories, you may email us directly:
 |---|---|
 | **Email** | j.d.a.jewell@open.ac.uk |
 | **PGP Key** | [Download Public Key]({{PGP_KEY_URL}}) |
-| **Fingerprint** | `{{PGP_FINGERPRINT}}` |
+| **Fingerprint** | `[PGP fingerprint not set]` |
 
 ```bash
 # Import our PGP key
@@ -332,7 +332,7 @@ To stay informed about security updates:
 
 ## Security Best Practices
 
-When using {{PROJECT_NAME}}, we recommend:
+When using Social Media Tools, we recommend:
 
 ### General
 
@@ -383,7 +383,7 @@ This security policy may be updated from time to time. Significant changes will 
 
 ---
 
-*Thank you for helping keep {{PROJECT_NAME}} and its users safe.* 🛡️
+*Thank you for helping keep Social Media Tools and its users safe.* 🛡️
 
 ---
 

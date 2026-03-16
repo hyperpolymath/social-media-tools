@@ -1,6 +1,7 @@
 // WASM-optimized NLP operations for NUJ Analyzer
 // AOT compilation to WebAssembly for maximum performance
 
+#![forbid(unsafe_code)]
 use wasm_bindgen::prelude::*;
 use std::collections::HashMap;
 

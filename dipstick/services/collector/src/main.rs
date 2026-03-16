@@ -2,6 +2,7 @@
 // Purpose: Monitor social media platforms for policy changes
 // Tech: Rust + Axum + SQLx + Tokio
 
+#![forbid(unsafe_code)]
 use axum::{
     extract::State,
     http::StatusCode,

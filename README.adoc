@@ -1,17 +1,207 @@
-= Social Media Tools
 // SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell
 
-Social media analysis and verification tools.
+= Social Media Tools
+
+:toc: macro
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+Social media analysis, monitoring, and verification tools. A monorepo containing two major projects built for the National Union of Journalists (NUJ) and general-purpose fact-checking workflows.
+
+toc::[]
 
 == Components
 
-* `dipstick/` - Social media health metrics and monitoring
-* `polygraph/` - Social media authenticity verification
+=== Dipstick — Social Media Health Metrics
+
+Policy change monitoring and impact analysis for journalists. Tracks platform terms-of-service changes, analyses their impact, and distributes alerts with a 19-layer safety guardrail system.
+
+**Status:** 40% complete | **Phase:** Core Analysis (Q1 2026)
+
+**Architecture:** 10 microservices
+
+[cols="1,1,1,3", options="header"]
+|===
+|Service |Language |Port |Purpose
+
+|Collector
+|Rust (Axum)
+|3001
+|Platform monitoring, change detection, SHA256 checksumming
+
+|Analyzer
+|ReScript + Deno + WASM
+|3002
+|NLP policy analysis, sentiment analysis, severity classification
+
+|Publisher
+|Deno
+|3003
+|Email delivery with 19-layer safety guardrails, 5-minute grace period
+
+|Dashboard
+|Elixir (Phoenix LiveView)
+|4000
+|Real-time approval workflows, platform management
+
+|Agent Swarm
+|Deno + LangChain
+|3004
+|7 specialised AI agents (policy analyst, fact checker, PESTLE, etc.)
+
+|PESTLE Observatory
+|Deno
+|3005
+|6 external intelligence sources, GraphQL federation
+
+|Julia Scraper
+|Julia
+|3006
+|Massively parallel scraping (1000+ concurrent connections)
+
+|XTDB Temporal
+|Clojure
+|3007
+|Bitemporal audit trail (valid-time + transaction-time)
+
+|Ada TUI
+|Ada/SPARK
+|—
+|Safety-critical terminal interface with formal verification
+
+|Gateway
+|ReScript/Deno GraphQL
+|8000
+|Federated schema stitching across all services
+|===
+
+**Data Layer:** SurrealDB + VerisimDB (core), Virtuoso RDF (PESTLE/SPARQL), XTDB (audit), Dragonfly (cache)
+
+See link:dipstick/ARCHITECTURE.md[dipstick/ARCHITECTURE.md] for full technical documentation.
+
+=== Polygraph — Authenticity Verification
+
+AI-powered fact-checking and misinformation detection with multi-source verification.
+
+**Status:** 20% complete | **Phase:** Foundation (Q1 2026)
+
+[cols="1,1,3", options="header"]
+|===
+|Component |Language |Purpose
+
+|Backend
+|Rust (Axum + async-graphql)
+|GraphQL API, ML modules, WASM plugin system
+
+|Frontend
+|ReScript + React 18 + TailwindCSS
+|Verification interface, credibility visualisation, analytics
+
+|Browser Extension
+|ReScript
+|In-context fact-checking overlay for web browsing
+
+|Elixir Services
+|Elixir
+|Distributed processing, real-time subscriptions
+|===
+
+**Data Layer:** ArangoDB (multi-model), XTDB (temporal), Dragonfly (cache)
+
+See link:polygraph/README.adoc[polygraph/README.adoc] and link:polygraph/DEVELOPMENT_SUMMARY.md[polygraph/DEVELOPMENT_SUMMARY.md] for details.
+
+== PanLL Panel Assessment
+
+Neither component currently integrates with link:https://github.com/hyperpolymath/panll[PanLL]. Both use standalone UIs (Phoenix LiveView for Dipstick, React for Polygraph).
+
+**Candidate panels for future PanLL integration:**
+
+[cols="1,2,1", options="header"]
+|===
+|Panel |Description |Priority
+
+|Dipstick Metrics
+|Real-time policy change detection, platform health indicators
+|High
+
+|Agent Swarm Monitor
+|Multi-agent workflow visualisation, task coordination
+|Medium
+
+|Polygraph Verification
+|Claim verification interface, credibility scores
+|Medium
+
+|PESTLE Observatory
+|External intelligence feeds, policy impact analysis
+|Low
+|===
+
+Conversion requires migrating React/LiveView components to PanLL's panel architecture (ReScript-native).
+
+== Container Stack
+
+All services use link:https://www.chainguard.dev/[Chainguard] base images with Podman orchestration.
+
+[source,bash]
+----
+# Start all services
+podman compose -f dipstick/compose.toml up
+
+# Run individual services
+cd dipstick/services/collector && cargo run
+cd dipstick/services/analyzer && deno task start
+----
+
+== Project Structure
+
+[source]
+----
+social-media-tools/
+├── dipstick/              # NUJ policy monitoring (10 services)
+│   ├── services/          # Microservice implementations
+│   ├── infrastructure/    # Database schemas, containerfiles
+│   ├── config/            # Service configuration
+│   ├── shared/            # Cross-service utilities
+│   └── tools/             # Development tooling
+├── polygraph/             # Fact-checking & verification
+│   ├── backend/           # Rust GraphQL API
+│   ├── frontend/          # ReScript + React UI
+│   ├── browser-extension/ # Browser overlay
+│   ├── elixir/            # Distributed processing
+│   └── infrastructure/    # Database schemas, containers
+├── contractiles/          # Operational templates (must/trust/dust/lust/k9)
+├── .machine_readable/     # SCM checkpoints (STATE, META, ECOSYSTEM)
+└── 0-AI-MANIFEST.a2ml     # AI agent entry point
+----
+
+== Usage
+
+[source,bash]
+----
+# Clone from any forge
+git clone git@github.com:hyperpolymath/social-media-tools.git
+git clone git@gitlab.com:hyperpolymath/social-media-tools.git
+git clone git@codeberg.org:hyperpolymath/social-media-tools.git
+
+# List available just recipes
+just
+
+# See component-specific recipes
+cd dipstick && just
+cd polygraph && just
+----
+
+== Roadmap
+
+See link:ROADMAP.adoc[ROADMAP.adoc] for the full phase plan and link:TOPOLOGY.md[TOPOLOGY.md] for the architecture completion dashboard.
 
 == License
 
-PMPL-1.0-or-later
+link:LICENSE[Palimpsest License (PMPL-1.0-or-later)]
 
-== Author
-
-Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+Copyright (c) 2025-2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>

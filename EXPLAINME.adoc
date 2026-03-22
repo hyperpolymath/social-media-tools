@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Social Media Tools — Show Me The Receipts
+:toc:
+:icons: font
+
+The README makes claims. This file backs them up.
+
+[quote, README]
+____
+Social media analysis, monitoring, and verification tools. A monorepo containing two major projects built for the National Union of Journalists (NUJ) and general-purpose fact-checking workflows.
+____
+
+== File Map
+
+[cols="1,2"]
+|===
+| Path | What's There
+
+| `test(s)/` | Test suite
+|===
+
+== Questions?
+
+Open an issue or reach out directly — happy to explain anything in more detail.

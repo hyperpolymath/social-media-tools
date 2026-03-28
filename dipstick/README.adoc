@@ -48,7 +48,7 @@ The new `Containerfile` (see `containerfiles/chainguard.Containerfile`) will:
 . stage artifacts via `cerro-torre` containerfiles in a reproducible pipeline.
 . expose ports 3001/3002/3003/4000 for internal mapping while `selur-compose` wires the services together through Svalinn/Vörðr.
 
-`just container-build` (calls `tools/scripts/container-build.sh`) tags the resulting `.ctp` bundle as `ghcr.io/hyperpolymath/social-media-monitor:latest`, accepts `LOCAL_REPOS` (default `/var/mnt/eclipse/repos`), and keeps `docker buildx`/BuildKit as the canonical builder.
+`just container-build` (calls `tools/scripts/container-build.sh`) tags the resulting `.ctp` bundle as `ghcr.io/hyperpolymath/social-media-monitor:latest`, accepts `LOCAL_REPOS` (default `/var$REPOS_DIR`), and keeps `docker buildx`/BuildKit as the canonical builder.
 
 `compose.toml` now describes the `nuj-stack` service—based on the Chainguard bundle—and the SurrealDB/VerisimDB + Dragonfly/Redis + Prometheus/Grafana/Loki data fabric. `selur-compose` reads this file to start the verified containers; legacy Podman compose files have been archived under `docs/legacy/podman`.
 

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-ARG LOCAL_REPOS=/var/mnt/eclipse/repos
+ARG LOCAL_REPOS=/var$REPOS_DIR
 
 ##### Stage: Collector (Rust) #####
 FROM cgr.dev/chainguard/wolfi-base:3.20 as collector-builder
@@ -49,7 +49,7 @@ COPY services/pestle-observatory/ /infra/pestle/
 
 ##### Stage: Selur/Svalinn/Vörðr Tooling #####
 FROM cgr.dev/chainguard/wolfi-base:3.20 as admin-cli-builder
-ARG LOCAL_REPOS=/var/mnt/eclipse/repos
+ARG LOCAL_REPOS=/var$REPOS_DIR
 RUN apk add --no-cache bash curl git build-base pkgconf openssl
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 RUN curl -fsSL https://deno.land/install.sh | sh -s -- -n deno

@@ -5,7 +5,7 @@ set -euo pipefail
 REPO_ROOT=$(git rev-parse --show-toplevel)
 CONTAINERFILE="containerfiles/chainguard.Containerfile"
 TAG=${TAG:-ghcr.io/hyperpolymath/social-media-monitor:latest}
-LOCAL_REPOS=${LOCAL_REPOS:-/var/mnt/eclipse/repos}
+LOCAL_REPOS=${LOCAL_REPOS:-/var$REPOS_DIR}
 EXTRA_ARGS=${EXTRA_ARGS:-}
 
 if ! command -v docker >/dev/null 2>&1; then

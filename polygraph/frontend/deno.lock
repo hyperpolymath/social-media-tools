@@ -1,0 +1,326 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:@apollo/client@^3.14.1": "3.14.1_graphql@16.13.2_react@18.3.1_react-dom@18.3.1__react@18.3.1",
+    "npm:@rescript/core@^1.6.1": "1.6.1_rescript@12.2.0",
+    "npm:@rescript/react@~0.12.2": "0.12.2_react@18.3.1_react-dom@18.3.1__react@18.3.1",
+    "npm:graphql@^16.13.2": "16.13.2",
+    "npm:react-dom@^18.3.1": "18.3.1_react@18.3.1",
+    "npm:react@^18.3.1": "18.3.1",
+    "npm:rescript-apollo-client@^1.1.2": "1.1.2_@apollo+client@3.14.1__graphql@16.13.2__react@18.3.1__react-dom@18.3.1___react@18.3.1_@reasonml-community+graphql-ppx@1.2.3__rescript@12.2.0_bs-platform@9.0.2_reason-react@0.9.2__bs-platform@9.0.2__react@18.3.1__react-dom@18.3.1___react@18.3.1_graphql@16.13.2_react@18.3.1_react-dom@18.3.1__react@18.3.1_rescript@12.2.0",
+    "npm:rescript@^12.2.0": "12.2.0"
+  },
+  "npm": {
+    "@apollo/client@3.14.1_graphql@16.13.2_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+      "integrity": "sha512-SgGX6E23JsZhUdG2anxiyHvEvvN6CUaI4ZfMsndZFeuHPXL3H0IsaiNAhLITSISbeyeYd+CBd9oERXQDdjXWZw==",
+      "dependencies": [
+        "@graphql-typed-document-node/core",
+        "@wry/caches",
+        "@wry/equality",
+        "@wry/trie",
+        "graphql",
+        "graphql-tag",
+        "hoist-non-react-statics",
+        "optimism",
+        "prop-types",
+        "react",
+        "react-dom",
+        "rehackt",
+        "symbol-observable",
+        "ts-invariant",
+        "tslib",
+        "zen-observable-ts"
+      ],
+      "optionalPeers": [
+        "react",
+        "react-dom"
+      ]
+    },
+    "@graphql-typed-document-node/core@3.2.0_graphql@16.13.2": {
+      "integrity": "sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==",
+      "dependencies": [
+        "graphql"
+      ]
+    },
+    "@reasonml-community/graphql-ppx@1.2.3_rescript@12.2.0": {
+      "integrity": "sha512-4XQpzfeLAhaDFX4d/z9AQs9nV0f0y01TRAM/lqRtDcgu+0W9F64FmuWk/4kQ6G1Rvo75pYKrLPlOf53vfHb+Qw==",
+      "dependencies": [
+        "rescript"
+      ],
+      "scripts": true
+    },
+    "@rescript/core@1.6.1_rescript@12.2.0": {
+      "integrity": "sha512-vyb5k90ck+65Fgui+5vCja/mUfzKaK3kOPT4Z6aAJdHLH1eljEi1zKhXroCiCtpNLSWp8k4ulh1bdB5WS0hvqA==",
+      "dependencies": [
+        "rescript"
+      ]
+    },
+    "@rescript/darwin-arm64@12.2.0": {
+      "integrity": "sha512-xc3K/J7Ujl1vPiFY2009mRf3kWRlUe/VZyJWprseKxlcEtUQv89ter7r6pY+YFbtYvA/fcaEncL9CVGEdattAg==",
+      "os": ["darwin"],
+      "cpu": ["arm64"]
+    },
+    "@rescript/darwin-x64@12.2.0": {
+      "integrity": "sha512-qqcTvnlSeoKkywLjG7cXfYvKZ1e4Gz2kUKcD6SiqDgCqm8TF+spwlFAiM6sloRUOFsc0bpC/0R0B3yr01FCB1A==",
+      "os": ["darwin"],
+      "cpu": ["x64"]
+    },
+    "@rescript/linux-arm64@12.2.0": {
+      "integrity": "sha512-ODmpG3ji+Nj/8d5yvXkeHlfKkmbw1Q4t1iIjVuNwtmFpz7TiEa7n/sQqoYdE+WzbDX3DoJfmJNbp3Ob7qCUoOg==",
+      "os": ["linux"],
+      "cpu": ["arm64"]
+    },
+    "@rescript/linux-x64@12.2.0": {
+      "integrity": "sha512-2W9Y9/g19Y4F/subl8yV3T8QBG2oRaP+HciNRcBjptyEdw9LmCKH8+rhWO6sp3E+nZLwoE2IAkwH0WKV3wqlxQ==",
+      "os": ["linux"],
+      "cpu": ["x64"]
+    },
+    "@rescript/react@0.12.2_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+      "integrity": "sha512-EOF19dLTG4Y9K59JqMjG5yfvIsrMZqfxGC2J/oe9gGgrMiUrzZh3KH9khTcR1Z3Ih0lRViSh0/iYnJz20gGoag==",
+      "dependencies": [
+        "react",
+        "react-dom"
+      ]
+    },
+    "@rescript/runtime@12.2.0": {
+      "integrity": "sha512-NwfljDRq1rjFPHUaca1nzFz13xsa9ZGkBkLvMhvVgavJT5+A4rMcLu8XAaVTi/oAhO/tlHf9ZDoOTF1AfyAk9Q=="
+    },
+    "@rescript/win32-x64@12.2.0": {
+      "integrity": "sha512-fhf8CBj3p1lkIXPeNko3mVTKQfXXm4BoxJtR1xAXxUn43wDpd8Lox4w8/EPBbbW6C/YFQW6H7rtpY+2AKuNaDA==",
+      "os": ["win32"],
+      "cpu": ["x64"]
+    },
+    "@wry/caches@1.0.1": {
+      "integrity": "sha512-bXuaUNLVVkD20wcGBWRyo7j9N3TxePEWFZj2Y+r9OoUzfqmavM84+mFykRicNsBqatba5JLay1t48wxaXaWnlA==",
+      "dependencies": [
+        "tslib"
+      ]
+    },
+    "@wry/context@0.7.4": {
+      "integrity": "sha512-jmT7Sb4ZQWI5iyu3lobQxICu2nC/vbUhP0vIdd6tHC9PTfenmRmuIFqktc6GH9cgi+ZHnsLWPvfSvc4DrYmKiQ==",
+      "dependencies": [
+        "tslib"
+      ]
+    },
+    "@wry/equality@0.5.7": {
+      "integrity": "sha512-BRFORjsTuQv5gxcXsuDXx6oGRhuVsEGwZy6LOzRRfgu+eSfxbhUQ9L9YtSEIuIjY/o7g3iWFjrc5eSY1GXP2Dw==",
+      "dependencies": [
+        "tslib"
+      ]
+    },
+    "@wry/trie@0.5.0": {
+      "integrity": "sha512-FNoYzHawTMk/6KMQoEG5O4PuioX19UbwdQKF44yw0nLfOypfQdjtfZzo/UIJWAJ23sNIFbD1Ug9lbaDGMwbqQA==",
+      "dependencies": [
+        "tslib"
+      ]
+    },
+    "bs-platform@9.0.2": {
+      "integrity": "sha512-Ye9JqJ4Oa7mcjjoOVRYI8Uc2Cf8N7jQLWDcdUplY7996d/YErSR7WitmV7XnSwr4EvdrbwjEsg1NxNjUQv3ChA==",
+      "scripts": true,
+      "bin": true
+    },
+    "graphql-tag@2.12.6_graphql@16.13.2": {
+      "integrity": "sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==",
+      "dependencies": [
+        "graphql",
+        "tslib"
+      ]
+    },
+    "graphql@16.13.2": {
+      "integrity": "sha512-5bJ+nf/UCpAjHM8i06fl7eLyVC9iuNAjm9qzkiu2ZGhM0VscSvS6WDPfAwkdkBuoXGM9FJSbKl6wylMwP9Ktig=="
+    },
+    "hoist-non-react-statics@3.3.2": {
+      "integrity": "sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==",
+      "dependencies": [
+        "react-is"
+      ]
+    },
+    "js-tokens@4.0.0": {
+      "integrity": "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="
+    },
+    "loose-envify@1.4.0": {
+      "integrity": "sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==",
+      "dependencies": [
+        "js-tokens"
+      ],
+      "bin": true
+    },
+    "object-assign@4.1.1": {
+      "integrity": "sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg=="
+    },
+    "optimism@0.18.1": {
+      "integrity": "sha512-mLXNwWPa9dgFyDqkNi54sjDyNJ9/fTI6WGBLgnXku1vdKY/jovHfZT5r+aiVeFFLOz+foPNOm5YJ4mqgld2GBQ==",
+      "dependencies": [
+        "@wry/caches",
+        "@wry/context",
+        "@wry/trie",
+        "tslib"
+      ]
+    },
+    "prop-types@15.8.1": {
+      "integrity": "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==",
+      "dependencies": [
+        "loose-envify",
+        "object-assign",
+        "react-is"
+      ]
+    },
+    "react-dom@18.3.1_react@18.3.1": {
+      "integrity": "sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==",
+      "dependencies": [
+        "loose-envify",
+        "react",
+        "scheduler"
+      ]
+    },
+    "react-is@16.13.1": {
+      "integrity": "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="
+    },
+    "react@18.3.1": {
+      "integrity": "sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==",
+      "dependencies": [
+        "loose-envify"
+      ]
+    },
+    "reason-react@0.9.2_bs-platform@9.0.2_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+      "integrity": "sha512-DzCeIBKZ/0RAK9dsHQx+gmpSEcHFKlJivl4UdFB8tirFg9Fb7MmtvUEBJX3IDhq5UVeoDHJV1NbQXM/SEQhpvA==",
+      "dependencies": [
+        "bs-platform",
+        "react",
+        "react-dom"
+      ]
+    },
+    "rehackt@0.1.0_react@18.3.1": {
+      "integrity": "sha512-7kRDOuLHB87D/JESKxQoRwv4DzbIdwkAGQ7p6QKGdVlY1IZheUnVhlk/4UZlNUVxdAXpyxikE3URsG067ybVzw==",
+      "dependencies": [
+        "react"
+      ],
+      "optionalPeers": [
+        "react"
+      ]
+    },
+    "rescript-apollo-client@1.1.2_@apollo+client@3.14.1__graphql@16.13.2__react@18.3.1__react-dom@18.3.1___react@18.3.1_@reasonml-community+graphql-ppx@1.2.3__rescript@12.2.0_bs-platform@9.0.2_reason-react@0.9.2__bs-platform@9.0.2__react@18.3.1__react-dom@18.3.1___react@18.3.1_graphql@16.13.2_react@18.3.1_react-dom@18.3.1__react@18.3.1_rescript@12.2.0": {
+      "integrity": "sha512-ByXUPisNdTywzRsIBV1hQiPTE1LR9YVSOGwjklDxuM7xjleNA8UvRmtkes7d3qbqNxvW+PJs+9o5ByiGvlWgAg==",
+      "dependencies": [
+        "@apollo/client",
+        "@reasonml-community/graphql-ppx",
+        "bs-platform",
+        "reason-react"
+      ]
+    },
+    "rescript@12.2.0": {
+      "integrity": "sha512-1Jf2cmNhyx5Mj2vwZ4XXPcXvNSjGj9D1jPBUcoqIOqRpLPo1ch2Ta/7eWh23xAHWHK5ow7BCDyYFjvZSjyjLzg==",
+      "dependencies": [
+        "@rescript/runtime"
+      ],
+      "optionalDependencies": [
+        "@rescript/darwin-arm64",
+        "@rescript/darwin-x64",
+        "@rescript/linux-arm64",
+        "@rescript/linux-x64",
+        "@rescript/win32-x64"
+      ],
+      "bin": true
+    },
+    "scheduler@0.23.2": {
+      "integrity": "sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==",
+      "dependencies": [
+        "loose-envify"
+      ]
+    },
+    "symbol-observable@4.0.0": {
+      "integrity": "sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ=="
+    },
+    "ts-invariant@0.10.3": {
+      "integrity": "sha512-uivwYcQaxAucv1CzRp2n/QdYPo4ILf9VXgH19zEIjFx2EJufV16P0JtJVpYHy89DItG6Kwj2oIUjrcK5au+4tQ==",
+      "dependencies": [
+        "tslib"
+      ]
+    },
+    "tslib@2.8.1": {
+      "integrity": "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="
+    },
+    "zen-observable-ts@1.2.5": {
+      "integrity": "sha512-QZWQekv6iB72Naeake9hS1KxHlotfRpe+WGNbNx5/ta+R3DNjVO2bswf63gXlWDcs+EMd7XY8HfVQyP1X6T4Zg==",
+      "dependencies": [
+        "zen-observable"
+      ]
+    },
+    "zen-observable@0.8.15": {
+      "integrity": "sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ=="
+    }
+  },
+  "redirects": {
+    "https://esm.sh/@wry/caches@^1.0.0?target=denonext": "https://esm.sh/@wry/caches@1.0.1?target=denonext",
+    "https://esm.sh/@wry/context@^0.7.0?target=denonext": "https://esm.sh/@wry/context@0.7.4?target=denonext",
+    "https://esm.sh/@wry/equality@^0.5.6?target=denonext": "https://esm.sh/@wry/equality@0.5.7?target=denonext",
+    "https://esm.sh/@wry/trie@^0.5.0?target=denonext": "https://esm.sh/@wry/trie@0.5.0?target=denonext",
+    "https://esm.sh/graphql-tag@^2.12.6?target=denonext": "https://esm.sh/graphql-tag@2.12.6?target=denonext",
+    "https://esm.sh/graphql@^14.0.0%20||%20^15.0.0%20||%20^16.0.0?target=denonext": "https://esm.sh/graphql@16.13.2?target=denonext",
+    "https://esm.sh/graphql@^16.10.0?target=denonext": "https://esm.sh/graphql@16.13.2?target=denonext",
+    "https://esm.sh/graphql@^16.11.0?target=denonext": "https://esm.sh/graphql@16.13.2?target=denonext",
+    "https://esm.sh/graphql@^16.12.0?target=denonext": "https://esm.sh/graphql@16.13.2?target=denonext",
+    "https://esm.sh/optimism@^0.18.0?target=denonext": "https://esm.sh/optimism@0.18.1?target=denonext",
+    "https://esm.sh/react@^18.3.1?target=denonext": "https://esm.sh/react@18.3.1?target=denonext",
+    "https://esm.sh/scheduler@^0.23.0?target=denonext": "https://esm.sh/scheduler@0.23.2?target=denonext",
+    "https://esm.sh/symbol-observable@^4.0.0?target=denonext": "https://esm.sh/symbol-observable@4.0.0?target=denonext",
+    "https://esm.sh/ts-invariant@^0.10.3?target=denonext": "https://esm.sh/ts-invariant@0.10.3?target=denonext",
+    "https://esm.sh/tslib@^2.1.0?target=denonext": "https://esm.sh/tslib@2.8.1?target=denonext",
+    "https://esm.sh/tslib@^2.3.0?target=denonext": "https://esm.sh/tslib@2.8.1?target=denonext",
+    "https://esm.sh/zen-observable-ts@^1.2.5?target=denonext": "https://esm.sh/zen-observable-ts@1.2.5?target=denonext"
+  },
+  "remote": {
+    "https://esm.sh/@apollo/client@3.8.8": "2e514b6610afc3f13bab6540c5cc5c215ad00a8073ef33d6b03eccde17afa848",
+    "https://esm.sh/@apollo/client@3.8.8/denonext/client.mjs": "e69fcd64a88d37daffd327ed6069600741de1a1a442b18d72b2e88cb10a5f9e4",
+    "https://esm.sh/@apollo/client@3.8.8/denonext/link/core/index.mjs": "a90bb655c9e4b174e40f294788d1cece60df92dfe928c06d0816e69cb7968b46",
+    "https://esm.sh/@apollo/client@3.8.8/denonext/react/index.mjs": "fd00b598f7815248837c0d0c8a803ac90e629f0b0794d9272618a4d6a58e70d7",
+    "https://esm.sh/@wry/caches@1.0.1/denonext/caches.mjs": "8bd03a1367fe0da76831980b19fb85bba46715731f8a9d3d123c4a430b329d12",
+    "https://esm.sh/@wry/caches@1.0.1?target=denonext": "903d5085ef52b469856a65875b2fc75b949d55a5642ce6ee3eb8c2e9639b85be",
+    "https://esm.sh/@wry/context@0.7.4/denonext/context.mjs": "932139447d7a0489a36b27e4e6f1e4d085b89d16b6b0ae7985684d003da27f05",
+    "https://esm.sh/@wry/context@0.7.4?target=denonext": "5a0bcff3436ae1aa05e3f39fce228aa1aaa52f84a296ec5f99cfac0da912175b",
+    "https://esm.sh/@wry/equality@0.5.7/denonext/equality.mjs": "a60c3c008dde6055236bb0150e2ca9e16c7381ff4b52dab81bfe48d776ca23c7",
+    "https://esm.sh/@wry/equality@0.5.7?target=denonext": "012d880839f414f5600e3263bcb62f73f4cfd1cbfb5ab68b0c5b29af9d4158e7",
+    "https://esm.sh/@wry/trie@0.5.0/denonext/trie.mjs": "df45bb537cafa504345a6e89890585ccc73c97938a6504cdb19b3e921ce3d31e",
+    "https://esm.sh/@wry/trie@0.5.0?target=denonext": "eac03c1a22707b58008a6fc5342d52d2e950c72e279e55aa64a43059a17ddf0f",
+    "https://esm.sh/graphql-tag@2.12.6/denonext/graphql-tag.mjs": "3c406ce9361c336dfd653e4c9760918cdead6fbc0056666d443d035ea1c9bca8",
+    "https://esm.sh/graphql-tag@2.12.6?target=denonext": "f409a3d5365a50f01577134fce5191314eab545ab9a6b608df182c7903b99192",
+    "https://esm.sh/graphql@16.13.2/denonext/graphql.mjs": "ca0b9f98ffb0e98ae70197dd8e89035a156c05c5b5996bf3a88b9b45a0ed5e1b",
+    "https://esm.sh/graphql@16.13.2?target=denonext": "b9b011267b43821eec22e4432c7e4e3711ea82b3fabf7b5c21148779ac9f6d16",
+    "https://esm.sh/graphql@16.8.1": "0db91141da2b639b70f0cb83233ecd61f2fa41ceb76f9986ed9764ef3b18d784",
+    "https://esm.sh/graphql@16.8.1/denonext/graphql.mjs": "cb030940c21782c05d1ec9d944206d6c46fb3cd7f9e06e4d00bbac3d1a6b7bdf",
+    "https://esm.sh/optimism@0.18.1/denonext/optimism.mjs": "23eb69935aa32aee23b6985c1d4cdeb58d34d88584b8e5d4865ea904c633e110",
+    "https://esm.sh/optimism@0.18.1?target=denonext": "c123dc337d92976465943382eff46e1b606cf4ee74908803632eeeaf1f25bd8d",
+    "https://esm.sh/react-dom@18.2.0": "abebab54f4ee2d760547448040e62c69777dc5e4ca7d18c46be9a63bcc14b500",
+    "https://esm.sh/react-dom@18.2.0/client": "f43f7bb47905958ce487302ca818ba5a845a6029daa7ea22ef097a575b72045b",
+    "https://esm.sh/react-dom@18.2.0/denonext/client.mjs": "088666a67024192b1d4983c053b5eef53a04a9a88699ce8c0aef0d93ac0504a3",
+    "https://esm.sh/react-dom@18.2.0/denonext/react-dom.mjs": "e310dc8ecca4b8f3edb903ee4e0cd73b9df4fb7e6d5effe1314abeb1651dc1a3",
+    "https://esm.sh/react@18.2.0": "fed8aeb7d240bb42a2167c9c7c6e842e128c7630cbcb08c4d61c9c1926f89c75",
+    "https://esm.sh/react@18.2.0/denonext/react.mjs": "a986c2876dc2f73879f395e677dc34cb751f260e69db16364810655f884df173",
+    "https://esm.sh/react@18.3.1/denonext/react.mjs": "fec8d5ab4ffa55c8b563abc31060c3dc0205699aff20beec4aba0311efdcc1a0",
+    "https://esm.sh/react@18.3.1?target=denonext": "336090fd1f03fdb9530dce4ac761717b5e1e1a630c775bac184ec4ee0809cf89",
+    "https://esm.sh/scheduler@0.23.2/denonext/scheduler.mjs": "8a1a8a363eb417fc8d40f6b15132e8964320782d7169e68fc6ac98b8b8c201eb",
+    "https://esm.sh/scheduler@0.23.2?target=denonext": "5f446c6d28a83c4c3905e964a311ac654bf1b1993bb6647ee731a592068d5a1a",
+    "https://esm.sh/symbol-observable@4.0.0/denonext/symbol-observable.mjs": "058ae001aed6209343f12109224f9a304f3d1040b0069dc034f7449ce8ca554e",
+    "https://esm.sh/symbol-observable@4.0.0?target=denonext": "6ebe9cef722602519072fce5ad94df2b20bb084b67d73a0d5ec1d111575cd015",
+    "https://esm.sh/ts-invariant@0.10.3/denonext/ts-invariant.mjs": "df2843844012b07fc5b43b8992b3f933c54fefa96b6384e3c17b4dee4ebdc183",
+    "https://esm.sh/ts-invariant@0.10.3?target=denonext": "0bf53249073479ccf28e9ae40021dafbb0fbb51339611c07057005a9cd294a6a",
+    "https://esm.sh/tslib@2.8.1/denonext/tslib.mjs": "c38da5dd6da6281964435002ce204cd586634fe3bdfb24a0ee116f48cf3292e9",
+    "https://esm.sh/tslib@2.8.1?target=denonext": "a89cbf082a0ad54e87ea85d75e6d5492b3e2ff0c5de9e3e478206a015b3f3992",
+    "https://esm.sh/zen-observable-ts@1.2.5/denonext/zen-observable-ts.mjs": "eb5777ed963d7e7c0ba6d906e2666b2bc4ab1571192ed2cfad08b10f31ad1224",
+    "https://esm.sh/zen-observable-ts@1.2.5?target=denonext": "fb3b02abd993b2eb7bd61acfa420d9b032c9b8667c7e3a3d9641e3188fa95bb4"
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@apollo/client@^3.14.1",
+        "npm:@rescript/core@^1.6.1",
+        "npm:@rescript/react@~0.12.2",
+        "npm:graphql@^16.13.2",
+        "npm:react-dom@^18.3.1",
+        "npm:react@^18.3.1",
+        "npm:rescript-apollo-client@^1.1.2",
+        "npm:rescript@^12.2.0"
+      ]
+    }
+  }
+}

@@ -77,3 +77,4 @@ htmlcov/
 /tmp/
 *.tmp
 *.bak
+polygraph/frontend/node_modules/

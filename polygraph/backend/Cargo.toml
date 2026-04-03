@@ -42,7 +42,7 @@ rand = "0.8"
 uuid = { version = "1.6", features = ["v4", "serde"] }
 
 # NLP (via WASM or FFI)
-rust-bert = "0.22"
+rust-bert = "0.23"
 tokenizers = "0.15"
 
 # Error handling
@@ -64,7 +64,7 @@ chrono = { version = "0.4", features = ["serde"] }
 hyper = { version = "1.1", features = ["full"] }
 
 # Metrics
-prometheus = "0.13"
+prometheus = "0.14"
 
 # WASM support
 wasm-bindgen = { version = "0.2", optional = true }

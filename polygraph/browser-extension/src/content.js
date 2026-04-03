@@ -21,11 +21,12 @@
   function detectPlatform() {
     const hostname = window.location.hostname;
 
-    if (hostname.includes('twitter.com') || hostname.includes('x.com')) {
+    if (hostname === 'twitter.com' || hostname.endsWith('.twitter.com') ||
+        hostname === 'x.com' || hostname.endsWith('.x.com')) {
       return 'twitter';
-    } else if (hostname.includes('facebook.com')) {
+    } else if (hostname === 'facebook.com' || hostname.endsWith('.facebook.com')) {
       return 'facebook';
-    } else if (hostname.includes('instagram.com')) {
+    } else if (hostname === 'instagram.com' || hostname.endsWith('.instagram.com')) {
       return 'instagram';
     }
 

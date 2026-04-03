@@ -82,21 +82,25 @@ async function verifyClaim(text, sourceUrl = null) {
   }
 }
 
-// Extract platform from URL
+// Extract platform from URL using hostname matching
 function getPlatformFromUrl(url) {
   if (!url) return 'unknown';
 
-  if (url.includes('twitter.com') || url.includes('x.com')) {
-    return 'twitter';
-  } else if (url.includes('facebook.com')) {
-    return 'facebook';
-  } else if (url.includes('instagram.com')) {
-    return 'instagram';
-  } else if (url.includes('tiktok.com')) {
-    return 'tiktok';
-  } else if (url.includes('reddit.com')) {
-    return 'reddit';
-  }
+  try {
+    const hostname = new URL(url).hostname;
+    if (hostname === 'twitter.com' || hostname.endsWith('.twitter.com') ||
+        hostname === 'x.com' || hostname.endsWith('.x.com')) {
+      return 'twitter';
+    } else if (hostname === 'facebook.com' || hostname.endsWith('.facebook.com')) {
+      return 'facebook';
+    } else if (hostname === 'instagram.com' || hostname.endsWith('.instagram.com')) {
+      return 'instagram';
+    } else if (hostname === 'tiktok.com' || hostname.endsWith('.tiktok.com')) {
+      return 'tiktok';
+    } else if (hostname === 'reddit.com' || hostname.endsWith('.reddit.com')) {
+      return 'reddit';
+    }
+  } catch { /* invalid URL */ }
 
   return 'unknown';
 }

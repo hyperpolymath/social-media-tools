@@ -4,12 +4,12 @@
     "team"
   ],
   "capabilities": {
-    "primary": {
-      "description": "TODO: describe this service's primary capability",
+    "static-analysis": {
+      "description": "Monitors and analyses social media platform policy changes with 19-layer safety guardrails.",
       "panel_compatible": true,
       "protocol": "cli",
       "requires_auth": false,
-      "type": "custom"
+      "type": "static-analysis"
     }
   },
   "consumes": [],

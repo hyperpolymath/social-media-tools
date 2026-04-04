@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Author: Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>
+
 use axum::{
     extract::{Path, State},
     http::StatusCode,
@@ -8,7 +11,7 @@ use serde_json::json;
 use tracing::{error, info};
 use uuid::Uuid;
 
-use crate::{db, models::CollectionJob, platforms, AppState};
+use crate::{db, platforms, AppState};
 
 pub async fn list_platforms(State(state): State<AppState>) -> impl IntoResponse {
     match db::get_active_platforms(&state.db).await {
@@ -51,19 +54,6 @@ pub async fn trigger_collection(
 
     match db::get_platform_by_id(&state.db, id).await {
         Ok(Some(platform)) => {
-            // Queue collection job
-            let job = CollectionJob {
-                platform_id: platform.id,
-                platform_name: platform.name.clone(),
-                scheduled_at: chrono::Utc::now(),
-                started_at: None,
-                completed_at: None,
-                status: crate::models::JobStatus::Pending,
-                documents_collected: 0,
-                changes_detected: 0,
-                errors: vec![],
-            };
-
             // In a real implementation, this would be queued in Redis
             // For now, we'll run it synchronously
             match platforms::collect_platform_policies(&state, &platform).await {

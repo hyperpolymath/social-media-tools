@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Author: Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>
+
 use anyhow::{anyhow, Result};
 use reqwest::Client;
 use scraper::{Html, Selector};

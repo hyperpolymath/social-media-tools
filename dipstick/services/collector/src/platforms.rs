@@ -1,5 +1,8 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Author: Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>
+
 use anyhow::Result;
-use tracing::{info, warn};
+use tracing::info;
 
 use crate::{db, models::{CollectionResult, Platform, PolicySnapshot}, scraper, AppState};
 

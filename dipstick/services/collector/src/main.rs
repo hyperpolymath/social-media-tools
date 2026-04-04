@@ -1,37 +1,23 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
 // NUJ Social Media Ethics Monitor - Collector Service
 // Purpose: Monitor social media platforms for policy changes
 // Tech: Rust + Axum + SQLx + Tokio
+// Author: Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>
 
 #![forbid(unsafe_code)]
 use axum::{
-    extract::State,
     http::StatusCode,
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
+    extract::State,
 };
+use nuj_collector::{config::Config, AppState};
 use sqlx::postgres::PgPoolOptions;
 use std::sync::Arc;
 use tokio::signal;
 use tower_http::trace::TraceLayer;
 use tracing::{error, info};
-
-mod config;
-mod db;
-mod handlers;
-mod models;
-mod platforms;
-mod scheduler;
-mod scraper;
-
-use config::Config;
-
-#[derive(Clone)]
-struct AppState {
-    db: sqlx::PgPool,
-    redis: redis::Client,
-    config: Arc<Config>,
-}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -71,7 +57,7 @@ async fn main() -> anyhow::Result<()> {
     };
 
     // Start background scheduler
-    let scheduler = scheduler::start_scheduler(state.clone()).await?;
+    let scheduler = nuj_collector::scheduler::start_scheduler(state.clone()).await?;
     info!("Background scheduler started");
 
     // Build router
@@ -93,11 +79,14 @@ fn create_router(state: AppState) -> Router {
     Router::new()
         .route("/health", get(health_check))
         .route("/metrics", get(metrics))
-        .route("/api/platforms", get(handlers::list_platforms))
-        .route("/api/platforms/:id", get(handlers::get_platform))
-        .route("/api/platforms/:id/collect", post(handlers::trigger_collection))
-        .route("/api/changes", get(handlers::list_changes))
-        .route("/api/changes/:id", get(handlers::get_change))
+        .route("/api/platforms", get(nuj_collector::handlers::list_platforms))
+        .route("/api/platforms/:id", get(nuj_collector::handlers::get_platform))
+        .route(
+            "/api/platforms/:id/collect",
+            post(nuj_collector::handlers::trigger_collection),
+        )
+        .route("/api/changes", get(nuj_collector::handlers::list_changes))
+        .route("/api/changes/:id", get(nuj_collector::handlers::get_change))
         .layer(TraceLayer::new_for_http())
         .with_state(state)
 }

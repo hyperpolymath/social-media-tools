@@ -2,8 +2,16 @@
 name = "nuj-collector"
 version = "0.1.0"
 edition = "2021"
-authors = ["NUJ Social Media Monitor Team"]
+authors = ["Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>"]
 description = "Platform monitoring and policy collection service"
+
+[lib]
+name = "nuj_collector"
+path = "src/lib.rs"
+
+[[bin]]
+name = "nuj-collector"
+path = "src/main.rs"
 
 [dependencies]
 # Web framework
@@ -55,6 +63,13 @@ bigdecimal = { version = "0.4", features = ["serde"] }
 [dev-dependencies]
 mockito = "1"
 tokio-test = "0.4"
+proptest = "1.4"
+criterion = { version = "0.5", features = ["async_tokio"] }
+tempfile = "3.8"
+
+[[bench]]
+name = "collector_bench"
+harness = false
 
 [profile.release]
 opt-level = 3

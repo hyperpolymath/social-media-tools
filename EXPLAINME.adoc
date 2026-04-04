@@ -1,22 +1,193 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Social Media Tools — Show Me The Receipts
 :toc:
+:toclevels: 3
 :icons: font
+:author: Jonathan D.A. Jewell
+:email: j.d.a.jewell@open.ac.uk
 
-The README makes claims. This file backs them up.
+The README makes claims. This file backs them up with service-level paths,
+an honest status reading for each sub-project, and enough architecture detail
+for an external reviewer to understand what is built, what is verified, and
+where the critical data paths live.
+
+== Claim 1: Two-project monorepo for NUJ journalists and fact-checkers
 
 [quote, README]
 ____
-Social media analysis, monitoring, and verification tools. A monorepo containing two major projects built for the National Union of Journalists (NUJ) and general-purpose fact-checking workflows.
+Social media analysis, monitoring, and verification tools. A monorepo
+containing two major projects built for the National Union of Journalists
+(NUJ) and general-purpose fact-checking workflows.
 ____
+
+*How it works.*
+The repo is organised as two independent sub-projects under `dipstick/` and
+`polygraph/`.
+Dipstick is the policy-monitoring arm: a Rust/Axum collector scrapes platform
+terms-of-service pages, SHA256-checksums each version, and feeds changes to a
+ReScript/Deno analyzer that classifies severity and drafts NUJ guidance.
+A Deno publisher then routes the guidance to journalists via email or webhook
+with a 19-layer safety guardrail and a 5-minute grace period for recall.
+An Elixir/Phoenix LiveView dashboard (`services/dashboard/`) provides
+real-time approval workflows.
+Polygraph is the fact-checking arm: a Rust/Axum backend provides a GraphQL
+API backed by ArangoDB (multi-model graph + document store) and XTDB
+(bitemporal audit trail), with a ReScript frontend and browser extension for
+in-context verification on social media pages.
+Both sub-projects share a Dragonfly cache layer (Redis-compatible), Loki
+structured logging, and Prometheus metrics.
+
+*Honest caveat.*
+Dipstick is described as 40 % complete; the collector, publisher, and
+dashboard have the most runtime coverage.
+The Ada/SPARK TUI (`services/tui-ada/`) and the XTDB temporal service are
+architectural commitments with partial implementation — formal verification of
+the SPARK interface is in progress, not complete.
+
+== Claim 2: 19-layer safety guardrail system for journalist communications
+
+[quote, README]
+____
+Publisher: Deno — Email delivery with 19-layer safety guardrails, 5-minute
+grace period.
+____
+
+*How it works.*
+`dipstick/services/publisher-deno/` implements the safety pipeline as a
+sequence of middleware functions applied before any email or webhook dispatch:
+authentication, rate-limiting, content-class filtering, duplicate suppression,
+recipient allowlist enforcement, rollback locking during the 5-minute recall
+window, and delivery-receipt logging.
+Each layer is a Deno-native module that either passes the payload forward or
+rejects it with a structured error captured in the analytics store.
+`dipstick/services/gateway-rescript/` acts as the federated GraphQL entry
+point stitching the Analyzer, Publisher, and Agent Swarm schemas together
+into a single typed API surface for the Dashboard.
+
+*Honest caveat.*
+The 19-layer count is a design specification; the number of fully-tested
+layers in `dipstick/services/publisher-deno/` should be verified against the
+test suite in `dipstick/services/publisher-deno/` before treating the figure
+as complete coverage.
+
+== Dogfooded Across The Account
+
+[cols="1,3", options="header"]
+|===
+| Tool / Repo | How social-media-tools uses it
+
+| `panic-attacker`
+| Pre-commit security scan across all services in the monorepo
+
+| `contractile.just` / contractiles
+| Hyperpolymath contractile integration hook at monorepo root and per-service
+
+| `stapeln.toml`
+| Container build manifest; Chainguard Wolfi base for each service image
+
+| `verisimdb`
+| Dipstick Collector writes policy-change time-series to a per-project VeriSimDB instance
+
+| `svalinn`
+| Edge gateway validating JSON Schema and policy before container deployments in the Dipstick stack
+
+| `selur`
+| `selur-compose` reads `compose.toml` to orchestrate the verified `nuj-stack` container graph
+
+| `cerro-torre`
+| Formal container builder signs SBOMs and image attestations for Chainguard-based images
+
+| `vörðr`
+| Runtime engine executes containers with verified attestation and RBAC policy
+
+| `0-AI-MANIFEST.a2ml`
+| AI manifest present at monorepo root for agent session initialisation
+|===
 
 == File Map
 
-[cols="1,2"]
+[cols="2,4", options="header"]
 |===
 | Path | What's There
 
-| `test(s)/` | Test suite
+| `dipstick/`
+| Social Media Ethics Monitor — policy-monitoring sub-project for NUJ
+
+| `dipstick/services/collector/`
+| Rust/Axum service: concurrent platform scraping, SHA256 change detection, Prometheus metrics (port 3001)
+
+| `dipstick/services/analyzer-rescript/`
+| ReScript compiled for Deno + Rust WASM NLP helpers: severity classification, guidance drafting (port 3002)
+
+| `dipstick/services/publisher-deno/`
+| Deno email/webhook publisher: 19-layer safety pipeline, 5-minute recall window (port 3003)
+
+| `dipstick/services/dashboard/`
+| Elixir/Phoenix LiveView: real-time approval workflows, guardrail control panel (port 4000)
+
+| `dipstick/services/gateway-rescript/`
+| ReScript/Deno GraphQL federation gateway: schema stitching, security policies (port 8000)
+
+| `dipstick/services/agent-swarm/`
+| Deno/LangChain-style 7-agent swarm: policy analyst, fact checker, PESTLE analyst bots
+
+| `dipstick/services/pestle-observatory/`
+| Deno: 6 external intelligence sources (GDPR, IFEX, Ranking 19), GraphQL federation (port 3005)
+
+| `dipstick/services/scraper-julia/`
+| Julia scraper: 1000+ concurrent connections for deep platform data ingestion
+
+| `dipstick/services/xtdb-temporal/`
+| Clojure + XTDB: bitemporal audit trail (valid-time + transaction-time) for policy change history
+
+| `dipstick/services/tui-ada/`
+| Ada/SPARK safety-critical terminal interface for critical policy overrides (formally verified)
+
+| `dipstick/config/`
+| Per-service configuration files, Nickel schemas
+
+| `dipstick/infrastructure/`
+| Container orchestration, Svalinn/Selur/Vörðr integration, Chainguard Containerfiles
+
+| `dipstick/compose.toml`
+| Selur-compose service graph: `nuj-stack` + data fabric (SurrealDB, VeriSimDB, Dragonfly, Prometheus/Grafana/Loki)
+
+| `dipstick/Justfile`
+| Dipstick developer recipes: `build`, `test`, `container-build`, `selur-up`
+
+| `polygraph/`
+| Social Media Polygraph — AI-powered fact-checking sub-project
+
+| `polygraph/backend/`
+| Rust/Axum async-graphql API: claim decomposition, NLP pipeline, credibility scoring
+
+| `polygraph/elixir/`
+| Elixir distributed state layer: CRDTs for eventually consistent claim history across nodes
+
+| `polygraph/frontend/`
+| ReScript/Deno React 18 frontend: claim submission UI, verification results display
+
+| `polygraph/browser-extension/`
+| ReScript browser extension: in-context fact-checking overlay on social media pages
+
+| `polygraph/infrastructure/`
+| ArangoDB, XTDB, Dragonfly, Podman compose definitions
+
+| `polygraph/docs/`
+| Architecture notes, NLP pipeline design, credibility algorithm rationale
+
+| `polygraph/Justfile`
+| Polygraph developer recipes
+
+| `tests/`
+| Monorepo-level integration tests spanning both sub-projects
+
+| `flake.nix` / `guix.scm`
+| Reproducible dev environment for the full monorepo
+
+| `stapeln.toml`
+| Root container build manifest
 |===
 
 == Questions?

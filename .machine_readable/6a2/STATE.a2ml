@@ -5,8 +5,9 @@
 [metadata]
 project = "social-media-tools"
 version = "0.1.0"
-last-updated = "2026-03-16"
+last-updated = "2026-04-04"
 status = "active"
+crg-grade = "C"
 
 [project-context]
 name = "social-media-tools"

@@ -13,6 +13,8 @@ set dotenv-load := true
 set positional-arguments := true
 
 # Project metadata
+import? "contractile.just"
+
 project := "social-media-tools"
 version := "0.1.0"
 tier := "infrastructure"  # 1 | 2 | infrastructure

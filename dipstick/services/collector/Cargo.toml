@@ -76,3 +76,11 @@ opt-level = 3
 lto = true
 codegen-units = 1
 strip = true
+
+# Force-bumped vulnerable transitive crates to patched versions
+# (added 2026-05-12 dependabot sweep — see PR description).
+# May require code adjustments if API has changed; CI surfaces this.
+[patch.crates-io]
+protobuf = { version = "3.7.2" }
+rand = { version = "0.9.3" }
+rustls-webpki = { version = "0.103.13" }

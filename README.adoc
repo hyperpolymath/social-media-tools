@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell
 
 = Social Media Tools
@@ -202,6 +202,6 @@ See link:ROADMAP.adoc[ROADMAP.adoc] for the full phase plan and link:TOPOLOGY.md
 
 == License
 
-link:LICENSE[Palimpsest License (PMPL-1.0-or-later)]
+link:LICENSE[Palimpsest License (MPL-2.0)]
 
 Copyright (c) 2025-2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>

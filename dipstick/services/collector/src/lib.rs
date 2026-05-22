@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // NUJ Social Media Ethics Monitor - Collector Service Library
 // Purpose: Public library interface for collector modules
 // Author: Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>

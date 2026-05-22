@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Reflexive tests - tests that verify test infrastructure itself
 // Author: Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>
 

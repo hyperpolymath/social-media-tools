@@ -159,7 +159,7 @@ These establish baseline performance metrics for regression testing.
 
 ## Code Quality Improvements
 
-1. **SPDX Headers** - All source files (.rs) have PMPL-1.0-or-later headers
+1. **SPDX Headers** - All source files (.rs) have MPL-2.0 headers
 2. **Lib/Bin Separation** - `src/lib.rs` exports public API; `src/main.rs` uses it
 3. **No `unwrap()` Abuse** - Error handling via Result and expect() with context
 4. **Module Organization** - Clean separation of config, db, models, handlers, etc.
@@ -236,7 +236,7 @@ cargo check
 ## Author & License
 
 - **Created by:** Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>
-- **License:** SPDX-License-Identifier: PMPL-1.0-or-later
+- **License:** SPDX-License-Identifier: MPL-2.0
 - **Date:** 2026-04-04
 - **Grade Achieved:** CRG C (Comprehensive Testing)
 

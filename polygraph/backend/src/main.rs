@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 
 /**
  * Polygraph Backend — Fact-Checking and Credibility Analysis Engine.

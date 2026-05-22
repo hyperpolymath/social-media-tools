@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // NUJ Social Media Ethics Monitor - Collector Service
 // Purpose: Monitor social media platforms for policy changes
 // Tech: Rust + Axum + SQLx + Tokio

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Social Media Tools - AI Agent Manifest
 # Universal entry point for AI agents (Claude, Gemini, OpenAI, etc.)
 
@@ -23,7 +23,7 @@ BOT_DIRECTIVES: .bot_directives/
 ## Critical Invariants (NEVER VIOLATE)
 
 1. SCM files ONLY in .machine_readable/ (NEVER in root)
-2. All original code uses PMPL-1.0-or-later license
+2. All original code uses MPL-2.0 license
 3. Follow RSR template structure
 4. No npm/bun/TypeScript (use Deno/ReScript)
 5. Workflow permissions: read-all at workflow level
@@ -62,4 +62,4 @@ on-exit:
 
 ## License
 
-PMPL-1.0-or-later (Palimpsest License)
+MPL-2.0 (Palimpsest License)

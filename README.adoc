@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell
 
 = Social Media Tools
+image:https://img.shields.io/badge/OpenSSF-Best_Practices-green?logo=openssourcesecurity[OpenSSF Best Practices,link="https://www.bestpractices.dev/en/projects/new?repo_url=https://github.com/hyperpolymath/social-media-tools"]
+
 
 :toc: macro
 :toclevels: 3
 :icons: font
 :source-highlighter: rouge
 
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[License: MPL-2.0,link="https://opensource.org/licenses/MPL-2.0"]
 
 Social media analysis, monitoring, and verification tools. A monorepo containing two major projects built for the National Union of Journalists (NUJ) and general-purpose fact-checking workflows.
 
@@ -202,6 +205,6 @@ See link:ROADMAP.adoc[ROADMAP.adoc] for the full phase plan and link:TOPOLOGY.md
 
 == License
 
-link:LICENSE[Palimpsest License (MPL-2.0)]
+This project is licensed under the Mozilla Public License, v. 2.0. See the `LICENSE` file for details.
 
-Copyright (c) 2025-2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+SPDX-License-Identifier: MPL-2.0

@@ -177,7 +177,7 @@ social-media-tools/
 │   ├── browser-extension/ # Browser overlay
 │   ├── elixir/            # Distributed processing
 │   └── infrastructure/    # Database schemas, containers
-├── contractiles/          # Operational templates (must/trust/dust/lust/k9)
+├── contractiles/          # Operational templates (must/trust/dust/intend/k9)
 ├── .machine_readable/     # SCM checkpoints (STATE, META, ECOSYSTEM)
 └── 0-AI-MANIFEST.a2ml     # AI agent entry point
 ----

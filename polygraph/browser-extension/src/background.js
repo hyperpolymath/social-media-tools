@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Background service worker for Social Media Polygraph extension
 
 const API_URL = 'http://localhost:8000/api/v1';

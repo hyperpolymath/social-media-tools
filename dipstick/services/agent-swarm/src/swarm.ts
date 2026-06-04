@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // NUJ AI Agent Swarm Coordination Service
 // Multi-agent system for policy analysis, guidance generation, and PESTLE monitoring
 // Uses LangChain for agent orchestration with best practices

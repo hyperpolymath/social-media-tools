@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // NUJ Social Media Ethics Monitor - Collector Service
 // Purpose: Monitor social media platforms for policy changes
 // Tech: Rust + Axum + SQLx + Tokio

@@ -15,6 +15,7 @@ jobs:
   test-collector:
     name: Test Collector Service (Rust)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
@@ -44,6 +45,7 @@ jobs:
   test-analyzer:
     name: Test Analyzer Service (Python)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
@@ -78,6 +80,7 @@ jobs:
   test-publisher:
     name: Test Publisher Service (Node.js)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
@@ -107,6 +110,7 @@ jobs:
   test-dashboard:
     name: Test Dashboard Service (Elixir)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
@@ -140,6 +144,7 @@ jobs:
   build-images:
     name: Build Docker Images
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [test-collector, test-analyzer, test-publisher, test-dashboard]
     if: github.event_name == 'push'
     strategy:
@@ -183,6 +188,7 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 

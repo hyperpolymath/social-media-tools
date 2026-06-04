@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Social Media Ethics Monitor – RSR Outline
 image:https://img.shields.io/badge/RSR-Infrastructure-cd7f32[RSR Infrastructure]
 image:https://img.shields.io/badge/Phase-Maintenance-brightgreen[Phase]
@@ -5,7 +7,6 @@ image:https://img.shields.io/badge/Container-Chainguard-orange[Chainguard]
 :toc:
 :toclevels: 3
 
-// SPDX-License-Identifier: MPL-2.0-or-later
 
 == Overview
 

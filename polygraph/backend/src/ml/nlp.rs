@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //! NLP Processor — High-Assurance Linguistic Analysis.
 //!
 //! This module provides the interface for natural language processing 

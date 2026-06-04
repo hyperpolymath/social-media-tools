@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // NUJ PESTLE Observatory Service
 // Connects to reliable external GraphQL APIs for PESTLE intelligence
 // Monitors developing guidance, best practices, and regulatory changes

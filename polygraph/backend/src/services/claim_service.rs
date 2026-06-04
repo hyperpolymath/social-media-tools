@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //! Polygraph Claim Service — Veracity Analysis Orchestrator.
 //!
 //! This module implements the business logic for tracking and verifying 

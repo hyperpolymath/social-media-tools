@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //! ArangoDB Client — Graph Relationship Management.
 //!
 //! This module provides the interface to the ArangoDB cluster, which 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // NUJ Publisher Service - Deno
 // 19-layer safety guardrail system for email delivery
 // Replaces Node.js with Deno for better security and performance

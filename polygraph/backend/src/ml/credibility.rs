@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //! Credibility Scoring Engine — ML Veracity Analysis.
 //!
 //! This module implements the numerical scoring algorithms used to 

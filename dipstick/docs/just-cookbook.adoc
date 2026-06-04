@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Just Cookbook
 
 This cookbook highlights the commands you can run through `just` now that the Chainguard + selur-compose workflow is in place.

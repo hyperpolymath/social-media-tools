@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Unit tests for collector models and config parsing
 // Author: Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>
 

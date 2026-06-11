@@ -1,16 +1,13 @@
 # SPDX-License-Identifier: MPL-2.0-or-later
 name: CI
-
 on:
   push:
-    branches: [ main, develop, 'claude/**' ]
+    branches: [main, develop, 'claude/**']
   pull_request:
-    branches: [ main, develop ]
-
+    branches: [main, develop]
 env:
   REGISTRY: ghcr.io
   IMAGE_PREFIX: ${{ github.repository_owner }}/nuj-monitor
-
 jobs:
   test-collector:
     name: Test Collector Service (Rust)
@@ -18,12 +15,10 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-
       - name: Cache Rust dependencies
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
         with:
@@ -34,92 +29,76 @@ jobs:
             ~/.cargo/git/db/
             services/collector/target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
       - name: Run tests
         working-directory: services/collector
         run: |
           cargo fmt -- --check
           cargo clippy -- -D warnings
           cargo test
-
   test-analyzer:
     name: Test Analyzer Service (Python)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.11'
-
       - name: Cache Python dependencies
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('services/analyzer/pyproject.toml') }}
-
       - name: Install dependencies
         working-directory: services/analyzer
         run: |
           pip install -e ".[dev]"
           python -m spacy download en_core_web_lg
-
       - name: Run linters
         working-directory: services/analyzer
         run: |
           black --check .
           isort --check-only .
           mypy app/
-
       - name: Run tests
         working-directory: services/analyzer
         run: pytest
-
   test-publisher:
     name: Test Publisher Service (Node.js)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642195f2b846b8bbe245a93 # v4
         with:
           node-version: '20'
-
       - name: Cache Node modules
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
         with:
           path: services/publisher/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('services/publisher/package-lock.json') }}
-
       - name: Install dependencies
         working-directory: services/publisher
         run: npm ci
-
       - name: Run linter
         working-directory: services/publisher
         run: npm run lint
-
       - name: Run tests
         working-directory: services/publisher
         run: npm test
-
   test-dashboard:
     name: Test Dashboard Service (Elixir)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
       - name: Setup Elixir
         uses: erlef/setup-beam@v1
         with:
           elixir-version: '1.15'
           otp-version: '26'
-
       - name: Cache Mix dependencies
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
         with:
@@ -127,20 +106,17 @@ jobs:
             services/dashboard/deps
             services/dashboard/_build
           key: ${{ runner.os }}-mix-${{ hashFiles('services/dashboard/mix.lock') }}
-
       - name: Install dependencies
         working-directory: services/dashboard
         run: |
           mix local.hex --force
           mix local.rebar --force
           mix deps.get
-
       - name: Run tests
         working-directory: services/dashboard
         run: |
           mix format --check-formatted
           mix test
-
   build-images:
     name: Build Docker Images
     runs-on: ubuntu-latest
@@ -152,17 +128,14 @@ jobs:
         service: [collector, analyzer, publisher, dashboard]
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -174,7 +147,6 @@ jobs:
             type=sha,prefix={{branch}}-
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -184,14 +156,12 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
@@ -199,7 +169,6 @@ jobs:
           scan-ref: '.'
           format: 'sarif'
           output: 'trivy-results.sarif'
-
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v4.31.9
         with:

@@ -347,3 +347,6 @@ push:
 # Show this help message
 help:
     @just --list --unsorted
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

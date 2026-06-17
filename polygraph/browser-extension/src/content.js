@@ -80,17 +80,34 @@
     console.log('Instagram verify buttons would be added here');
   }
 
+// Top of the file or near other utility functions
+function safeSetHTML(element, htmlString) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, 'text/html');
+  element.replaceChildren(...doc.body.childNodes);
+}
+
+function escapeHtml(text) {
+  if (!text) return text;
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
   // Create verify button element
   function createVerifyButton() {
     const button = document.createElement('button');
     button.className = 'polygraph-verify-btn';
-    button.innerHTML = `
+    safeSetHTML(button, `
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
         <path d="M9 12l2 2 4-4"></path>
       </svg>
       <span>Verify</span>
-    `;
+    `);
     button.title = 'Verify this claim with Social Media Polygraph';
     return button;
   }
@@ -102,7 +119,7 @@
       const button = tweetElement.querySelector('.polygraph-verify-btn');
       if (button) {
         button.disabled = true;
-        button.innerHTML = '<span>Verifying...</span>';
+        safeSetHTML(button, '<span>Verifying...</span>');
       }
 
       // Send to background script for API call
@@ -133,19 +150,19 @@
     // Create result popup
     const popup = document.createElement('div');
     popup.className = 'polygraph-result-popup';
-    popup.innerHTML = `
-      <div class="polygraph-result-header ${getVerdictClass(verification.verdict)}">
-        <strong>${formatVerdict(verification.verdict)}</strong>
-        <span>${Math.round(verification.confidence * 100)}% confidence</span>
+    safeSetHTML(popup, `
+      <div class="polygraph-result-header ${escapeHtml(getVerdictClass(verification.verdict))}">
+        <strong>${escapeHtml(formatVerdict(verification.verdict))}</strong>
+        <span>${escapeHtml(Math.round(verification.confidence * 100))}% confidence</span>
       </div>
       <div class="polygraph-result-body">
-        <p>${verification.explanation}</p>
+        <p>${escapeHtml(verification.explanation)}</p>
         ${verification.fact_checks.length > 0 ? `
           <div class="polygraph-sources">
             <strong>Sources:</strong>
             <ul>
               ${verification.fact_checks.map(fc => `
-                <li>${fc.source}: ${formatVerdict(fc.verdict)}</li>
+                <li>${escapeHtml(fc.source)}: ${escapeHtml(formatVerdict(fc.verdict))}</li>
               `).join('')}
             </ul>
           </div>

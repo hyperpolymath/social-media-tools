@@ -2,6 +2,22 @@
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Popup script for Social Media Polygraph extension
 
+function safeSetHTML(element, htmlString) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(htmlString, 'text/html');
+  element.replaceChildren(...doc.body.childNodes);
+}
+
+function escapeHtml(text) {
+  if (!text) return text;
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 document.getElementById('verifyBtn').addEventListener('click', async () => {
   const text = document.getElementById('claimText').value.trim();
 
@@ -16,7 +32,7 @@ document.getElementById('verifyBtn').addEventListener('click', async () => {
   try {
     button.disabled = true;
     button.textContent = 'Verifying...';
-    resultDiv.innerHTML = '<div class="loading">Analyzing claim...</div>';
+    safeSetHTML(resultDiv, '<div class="loading">Analyzing claim...</div>');
 
     // Get current tab URL
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -34,7 +50,7 @@ document.getElementById('verifyBtn').addEventListener('click', async () => {
       throw new Error(response.error || 'Verification failed');
     }
   } catch (error) {
-    resultDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+    safeSetHTML(resultDiv, `<div class="error">Error: ${escapeHtml(error.message)}</div>`);
   } finally {
     button.disabled = false;
     button.textContent = 'Verify Claim';
@@ -51,17 +67,17 @@ function displayResult(result) {
   const verdictClass = verification.verdict.includes('true') ? 'true' :
                        verification.verdict.includes('false') ? 'false' : 'mixed';
 
-  resultDiv.innerHTML = `
-    <div class="result ${verdictClass}">
-      <strong>${formatVerdict(verification.verdict)}</strong>
+  safeSetHTML(resultDiv, `
+    <div class="result ${escapeHtml(verdictClass)}">
+      <strong>${escapeHtml(formatVerdict(verification.verdict))}</strong>
       <p style="margin: 8px 0 0 0; font-size: 13px;">
-        ${verification.explanation}
+        ${escapeHtml(verification.explanation)}
       </p>
       <p style="margin: 8px 0 0 0; font-size: 12px; opacity: 0.8;">
-        Confidence: ${Math.round(verification.confidence * 100)}%
+        Confidence: ${escapeHtml(Math.round(verification.confidence * 100))}%
       </p>
     </div>
-  `;
+  `);
 }
 
 function formatVerdict(verdict) {

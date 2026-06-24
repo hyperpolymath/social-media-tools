@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: MPL-2.0
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# cargo-deny advisory policy — documented, reviewable record of accepted /
+# deferred security advisories for this repository.
+
+[advisories]
+ignore = [
+  # ---------------------------------------------------------------------------
+  # RUSTSEC-2026-0104 / GHSA-82j2-j2ch-gfr8
+  #   rustls-webpki: DoS via panic on malformed CRL BIT STRING (HIGH, CVSS 7.5).
+  #   Fixed in rustls-webpki >= 0.103.13.
+  #
+  # STATUS: DEFERRED 2026-06-24 (interim holding measure — Option 1).
+  # WHY NOT FIXED NOW:
+  #   * The vulnerable rustls-webpki (<0.103.13) is TRANSITIVELY pinned by an
+  #     unmaintained dependency (its latest release still requires reqwest 0.11
+  #     -> rustls 0.21 -> rustls-webpki <0.103.13), and the advisory has NO
+  #     patched release below 0.103.13. There is no in-range bump.
+  #   * Removing it requires replacing/forking that dependency onto reqwest 0.12
+  #     / rustls 0.23 AND reviving the repo's pre-existing (unrelated) compile
+  #     errors — this repo does not currently build.
+  #   * Because the repo does not build, the vulnerable code path is DORMANT
+  #     (non-running); present real-world exposure is effectively nil.
+  # REVIEW TRIGGER: remove this ignore and remediate when the repo is next
+  #   revived to a compiling state (upgrade the pinning dependency to reqwest
+  #   0.12 / rustls 0.23). Also dismiss the corresponding Dependabot alert.
+  # ---------------------------------------------------------------------------
+  "RUSTSEC-2026-0104",
+]

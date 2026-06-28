@@ -34,7 +34,7 @@ Policy change monitoring and impact analysis for journalists. Tracks platform te
 |Platform monitoring, change detection, SHA256 checksumming
 
 |Analyzer
-|ReScript + Deno + WASM
+|AfineScript + Deno + WASM
 |3002
 |NLP policy analysis, sentiment analysis, severity classification
 
@@ -74,7 +74,7 @@ Policy change monitoring and impact analysis for journalists. Tracks platform te
 |Safety-critical terminal interface with formal verification
 
 |Gateway
-|ReScript/Deno GraphQL
+|AffineScript/Deno GraphQL
 |8000
 |Federated schema stitching across all services
 |===
@@ -98,11 +98,11 @@ AI-powered fact-checking and misinformation detection with multi-source verifica
 |GraphQL API, ML modules, WASM plugin system
 
 |Frontend
-|ReScript + React 18 + TailwindCSS
+|AffineScript + React 18 + TailwindCSS
 |Verification interface, credibility visualisation, analytics
 
 |Browser Extension
-|ReScript
+|AffineScript
 |In-context fact-checking overlay for web browsing
 
 |Elixir Services
@@ -110,7 +110,7 @@ AI-powered fact-checking and misinformation detection with multi-source verifica
 |Distributed processing, real-time subscriptions
 |===
 
-**Data Layer:** ArangoDB (multi-model), XTDB (temporal), Dragonfly (cache)
+**Data Layer:** Verisim (multi-model), XTDB (temporal), Dragonfly (cache)
 
 See link:polygraph/README.adoc[polygraph/README.adoc] and link:polygraph/DEVELOPMENT_SUMMARY.md[polygraph/DEVELOPMENT_SUMMARY.md] for details.
 
@@ -141,7 +141,7 @@ Neither component currently integrates with link:https://github.com/hyperpolymat
 |Low
 |===
 
-Conversion requires migrating React/LiveView components to PanLL's panel architecture (ReScript-native).
+Conversion requires migrating React/LiveView components to PanLL's panel architecture (AffineScript-native).
 
 == Container Stack
 
@@ -170,7 +170,7 @@ social-media-tools/
 │   └── tools/             # Development tooling
 ├── polygraph/             # Fact-checking & verification
 │   ├── backend/           # Rust GraphQL API
-│   ├── frontend/          # ReScript + React UI
+│   ├── frontend/          # AffineScript + React UI
 │   ├── browser-extension/ # Browser overlay
 │   ├── elixir/            # Distributed processing
 │   └── infrastructure/    # Database schemas, containers

@@ -43,19 +43,8 @@ If you cannot use GitHub Security Advisories, you may email us directly:
 | | |
 |---|---|
 | **Email** | j.d.a.jewell@open.ac.uk |
-| **PGP Key** | [Download Public Key]({{PGP_KEY_URL}}) |
 | **Fingerprint** | `[PGP fingerprint not set]` |
 
-```bash
-# Import our PGP key
-curl -sSL {{PGP_KEY_URL}} | gpg --import
-
-# Verify fingerprint
-gpg --fingerprint j.d.a.jewell@open.ac.uk
-
-# Encrypt your report
-gpg --armor --encrypt --recipient j.d.a.jewell@open.ac.uk report.txt
-```
 
 > **⚠️ Important:** Do not report security vulnerabilities through public GitHub issues, pull requests, discussions, or social media.
 
@@ -354,7 +343,6 @@ When using Social Media Tools, we recommend:
 
 ## Additional Resources
 
-- [Our PGP Public Key]({{PGP_KEY_URL}})
 - [Security Advisories](https://github.com/hyperpolymath/social-media-tools/security/advisories)
 - [Changelog](CHANGELOG.md)
 - [Contributing Guidelines](CONTRIBUTING.md)

@@ -1,11 +1,16 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine (Semantic pass)
+
+module Main;
+
 // NUJ Analyzer Service - ReScript + Deno + WASM
-// Replaces Python analyzer with type-safe functional approach
+// Replaces Python analyzer with struct-safe functional approach
 
 open Promise
 
 module WasmNlp = {
   // WASM-optimized NLP operations for performance-critical analysis
-  type t
+  struct t
 
   @module("./wasm/nlp_wasm.js")
   external init: unit => Promise.t<t> = "init"
@@ -21,17 +26,17 @@ module WasmNlp = {
 }
 
 module SeverityClassifier = {
-  type severity = Critical | High | Medium | Low | Info
+  struct severity { Critical | High | Medium | Low | Info
 
-  type features = {
+  struct features { {
     sentimentChange: float,
     keyTermMatches: int,
     textualChange: float,
     contextualRelevance: float,
   }
 
-  let classifySeverity = (features: features): severity => {
-    let score =
+  fn classifySeverity = (features: features): severity => {
+    fn score =
       features.sentimentChange *. 0.3 +.
       Float.fromInt(features.keyTermMatches) *. 0.25 +.
       features.textualChange *. 0.25 +.
@@ -50,7 +55,7 @@ module SeverityClassifier = {
     }
   }
 
-  let severityToString = (s: severity): string => {
+  fn severityToString = (s: severity): string => {
     switch s {
     | Critical => "critical"
     | High => "high"
@@ -62,7 +67,7 @@ module SeverityClassifier = {
 }
 
 module GuidanceGenerator = {
-  type context = {
+  struct context { {
     platform: string,
     policyChange: string,
     severity: SeverityClassifier.severity,
@@ -70,8 +75,8 @@ module GuidanceGenerator = {
     pestleFactors: array<string>,
   }
 
-  let generateGuidance = async (ctx: context, openaiKey: string): Promise.t<string> => {
-    let prompt = `As a journalism union advisor, draft guidance for NUJ members about this policy change:
+  fn generateGuidance = async (ctx: context, openaiKey: string): Promise.t<string> => {
+    fn prompt = `As a journalism union advisor, draft guidance for NUJ members about this policy change:
 
 Platform: ${ctx.platform}
 Change: ${ctx.policyChange}
@@ -93,14 +98,14 @@ Tone: Professional, supportive, empowering.`
 }
 
 module AnalysisApi = {
-  type request = {
+  struct request { {
     policyId: string,
     oldText: string,
     newText: string,
     platform: string,
   }
 
-  type response = {
+  struct response { {
     policyId: string,
     severity: string,
     changeScore: float,
@@ -109,24 +114,24 @@ module AnalysisApi = {
     guidance: option<string>,
   }
 
-  let analyzeChange = async (req: request, nlpWasm: WasmNlp.t): Promise.t<response> => {
-    let changeScore = await nlpWasm->WasmNlp.detectChanges(req.oldText, req.newText)
-    let sentiment = await nlpWasm->WasmNlp.analyzeSentiment(req.newText)
-    let keyTerms = await nlpWasm->WasmNlp.extractKeyTerms(req.newText, 10)
+  fn analyzeChange = async (req: request, nlpWasm: WasmNlp.t): Promise.t<response> => {
+    fn changeScore = await nlpWasm->WasmNlp.detectChanges(req.oldText, req.newText)
+    fn sentiment = await nlpWasm->WasmNlp.analyzeSentiment(req.newText)
+    fn keyTerms = await nlpWasm->WasmNlp.extractKeyTerms(req.newText, 10)
 
-    let journalismTerms = ["journalist", "reporter", "defamation", "privacy", "harassment", "verification"]
-    let keyTermMatches = keyTerms->Array.filter(term =>
+    fn journalismTerms = ["journalist", "reporter", "defamation", "privacy", "harassment", "verification"]
+    fn keyTermMatches = keyTerms->Array.filter(term =>
       journalismTerms->Array.some(jTerm => term->String.includes(jTerm))
     )->Array.length
 
-    let features: SeverityClassifier.features = {
+    fn features: SeverityClassifier.features = {
       sentimentChange: sentiment,
       keyTermMatches,
       textualChange: changeScore,
       contextualRelevance: Float.fromInt(keyTermMatches) /. Float.fromInt(journalismTerms->Array.length),
     }
 
-    let severity = SeverityClassifier.classifySeverity(features)
+    fn severity = SeverityClassifier.classifySeverity(features)
 
     Promise.resolve({
       policyId: req.policyId,
@@ -140,16 +145,16 @@ module AnalysisApi = {
 }
 
 module HttpServer = {
-  let handleRequest = async (nlpWasm: WasmNlp.t, request: 'request): Promise.t<'response> => {
+  fn handleRequest = async (nlpWasm: WasmNlp.t, request: 'request): Promise.t<'response> => {
     Console.log("Handling analysis request")
     // Deno HTTP server integration would go here
     Promise.resolve(Obj.magic({"status": "ok"}))
   }
 
-  let start = async (port: int): Promise.t<unit> => {
+  fn start = async (port: int): Promise.t<unit> => {
     Console.log(`Starting NUJ Analyzer Service on port ${Int.toString(port)}`)
 
-    let nlpWasm = await WasmNlp.init()
+    fn nlpWasm = await WasmNlp.init()
     Console.log("WASM NLP engine initialized")
 
     // Deno.serve integration
@@ -159,10 +164,11 @@ module HttpServer = {
 }
 
 // Main entry point
-let main = async () => {
-  let port = 3002
+fn main = async () => {
+  fn port = 3002
   await HttpServer.start(port)
 }
 
 // Execute
 main()->ignore
+

@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine (Semantic pass)
+
+module Queries;
+
 // GraphQL queries
 
 module GetClaimQuery = %graphql(`
@@ -26,3 +31,4 @@ module ListClaimsQuery = %graphql(`
     }
   }
 `)
+

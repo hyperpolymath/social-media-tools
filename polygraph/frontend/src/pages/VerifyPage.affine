@@ -1,13 +1,18 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine (Semantic pass)
+
+module VerifyPage;
+
 // Verify claim page
 
 module VerifyPage = {
   @react.component
-  let make = () => {
-    let (claimText, setClaimText) = React.useState(() => "")
-    let (result, setResult) = React.useState(() => None)
-    let (loading, setLoading) = React.useState(() => false)
+  fn make = () => {
+    fn (claimText, setClaimText) = React.useState(() => "")
+    fn (result, setResult) = React.useState(() => None)
+    fn (loading, setLoading) = React.useState(() => false)
 
-    let handleSubmit = _evt => {
+    fn handleSubmit = _evt => {
       setLoading(_ => true)
 
       // TODO: Call GraphQL mutation via Apollo Client
@@ -39,7 +44,7 @@ module VerifyPage = {
               placeholder="Enter the claim you want to verify..."
               value={claimText}
               onChange={evt => {
-                let value = ReactEvent.Form.target(evt)["value"]
+                fn value = ReactEvent.Form.target(evt)["value"]
                 setClaimText(_ => value)
               }}
             />
@@ -65,7 +70,7 @@ module VerifyPage = {
 
 module VerificationResult = {
   @react.component
-  let make = (~result) => {
+  fn make = (~result) => {
     <div className="bg-white rounded-lg shadow-sm p-6">
       <h3 className="text-xl font-bold mb-4">
         {React.string("Verification Result")}
@@ -86,3 +91,4 @@ module VerificationResult = {
     </div>
   }
 }
+

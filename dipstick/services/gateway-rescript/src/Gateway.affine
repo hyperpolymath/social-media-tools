@@ -1,10 +1,15 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine (Semantic pass)
+
+module Gateway;
+
 // NUJ GraphQL Federation Gateway - ReScript + Deno
 // Type-safe GraphQL gateway with federated schema stitching
 
 open Promise
 
 module ServiceEndpoints = {
-  type t = {
+  struct t { {
     collector: string,
     analyzer: string,
     publisher: string,
@@ -12,7 +17,7 @@ module ServiceEndpoints = {
     pestleObservatory: string,
   }
 
-  let fromEnv = (): t => {
+  fn fromEnv = (): t => {
     {
       collector: "http://collector:3001/graphql",
       analyzer: "http://analyzer:3002/graphql",
@@ -25,7 +30,7 @@ module ServiceEndpoints = {
 
 module Schema = {
   // Type-safe schema definitions
-  type platform = {
+  struct platform { {
     id: string,
     name: string,
     displayName: string,
@@ -33,7 +38,7 @@ module Schema = {
     apiEnabled: bool,
   }
 
-  type policyChange = {
+  struct policyChange { {
     id: string,
     platformId: string,
     detectedAt: string,
@@ -43,7 +48,7 @@ module Schema = {
     pestleFactors: array<string>,
   }
 
-  type guidance = {
+  struct guidance { {
     id: string,
     policyChangeId: string,
     content: string,
@@ -52,7 +57,7 @@ module Schema = {
     status: string,
   }
 
-  type agentTask = {
+  struct agentTask { {
     id: string,
     taskType: string,
     status: string,
@@ -61,7 +66,7 @@ module Schema = {
     result: option<string>,
   }
 
-  type pestleAnalysis = {
+  struct pestleAnalysis { {
     policyChangeId: string,
     political: array<string>,
     economic: array<string>,
@@ -76,7 +81,7 @@ module Schema = {
 module Resolvers = {
   open Schema
 
-  let getPlatforms = async (): Promise.t<array<platform>> => {
+  fn getPlatforms = async (): Promise.t<array<platform>> => {
     // Federated query to collector service
     Promise.resolve([
       {
@@ -89,35 +94,35 @@ module Resolvers = {
     ])
   }
 
-  let getPolicyChanges = async (limit: int, severity: option<string>): Promise.t<array<policyChange>> => {
+  fn getPolicyChanges = async (limit: int, severity: option<string>): Promise.t<array<policyChange>> => {
     // Federated query to collector + analyzer
     Promise.resolve([])
   }
 
-  let getGuidance = async (policyChangeId: string): Promise.t<option<guidance>> => {
+  fn getGuidance = async (policyChangeId: string): Promise.t<option<guidance>> => {
     // Federated query to analyzer + publisher
     Promise.resolve(None)
   }
 
-  let getAgentTasks = async (status: option<string>): Promise.t<array<agentTask>> => {
+  fn getAgentTasks = async (status: option<string>): Promise.t<array<agentTask>> => {
     // Query to agent swarm service
     Promise.resolve([])
   }
 
-  let getPestleAnalysis = async (policyChangeId: string): Promise.t<option<pestleAnalysis>> => {
+  fn getPestleAnalysis = async (policyChangeId: string): Promise.t<option<pestleAnalysis>> => {
     // Query to PESTLE observatory service
     Promise.resolve(None)
   }
 
-  let triggerAgentSwarm = async (taskType: string, context: 'a): Promise.t<string> => {
+  fn triggerAgentSwarm = async (taskType: string, context: 'a): Promise.t<string> => {
     // Trigger multi-agent coordination
     Promise.resolve("task-id-123")
   }
 }
 
 module GraphQLServer = {
-  let schema = `
-    type Platform {
+  fn schema = `
+    struct Platform {
       id: ID!
       name: String!
       displayName: String!
@@ -125,7 +130,7 @@ module GraphQLServer = {
       apiEnabled: Boolean!
     }
 
-    type PolicyChange {
+    struct PolicyChange {
       id: ID!
       platformId: ID!
       detectedAt: String!
@@ -136,7 +141,7 @@ module GraphQLServer = {
       pestleAnalysis: PESTLEAnalysis
     }
 
-    type Guidance {
+    struct Guidance {
       id: ID!
       policyChangeId: ID!
       content: String!
@@ -145,7 +150,7 @@ module GraphQLServer = {
       status: String!
     }
 
-    type AgentTask {
+    struct AgentTask {
       id: ID!
       taskType: String!
       status: String!
@@ -154,7 +159,7 @@ module GraphQLServer = {
       result: String
     }
 
-    type PESTLEAnalysis {
+    struct PESTLEAnalysis {
       policyChangeId: ID!
       political: [String!]!
       economic: [String!]!
@@ -165,7 +170,7 @@ module GraphQLServer = {
       confidence: Float!
     }
 
-    type Query {
+    struct Query {
       platforms: [Platform!]!
       policyChanges(limit: Int = 50, severity: String): [PolicyChange!]!
       guidance(policyChangeId: ID!): Guidance
@@ -173,13 +178,13 @@ module GraphQLServer = {
       pestleAnalysis(policyChangeId: ID!): PESTLEAnalysis
     }
 
-    type Mutation {
+    struct Mutation {
       triggerAgentSwarm(taskType: String!, context: JSON!): ID!
       approveGuidance(guidanceId: ID!): Guidance!
       publishGuidance(guidanceId: ID!): Guidance!
     }
 
-    type Subscription {
+    struct Subscription {
       policyChangeDetected: PolicyChange!
       agentTaskProgress(taskId: ID!): AgentTask!
     }
@@ -187,7 +192,7 @@ module GraphQLServer = {
     scalar JSON
   `
 
-  let start = async (port: int): Promise.t<unit> => {
+  fn start = async (port: int): Promise.t<unit> => {
     Console.log(`Starting NUJ GraphQL Gateway on port ${Int.toString(port)}`)
     Console.log("Federated services:")
     Console.log("  - Collector (platforms, policy snapshots)")
@@ -202,8 +207,9 @@ module GraphQLServer = {
   }
 }
 
-let main = async () => {
+fn main = async () => {
   await GraphQLServer.start(8000)
 }
 
 main()->ignore
+

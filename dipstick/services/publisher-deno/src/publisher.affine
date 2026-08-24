@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module publisher;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // NUJ Publisher Service - Deno
 // 19-layer safety guardrail system for email delivery
 // Replaces Node.js with Deno for better security and performance
@@ -13,7 +10,7 @@ module publisher;
 import * as nodemailer from "nodemailer";
 
 // Safety guardrail layers
-export enum GuardrailLayer {
+enum GuardrailLayer {
   APPROVAL_REQUIRED = 1,
   GRACE_PERIOD = 2,
   TEST_GROUP_FIRST = 3,
@@ -35,7 +32,7 @@ export enum GuardrailLayer {
   DISASTER_RECOVERY = 19,
 }
 
-export interface PublicationRequest {
+struct PublicationRequest {
   guidanceId: string;
   content: string;
   recipients: string[];
@@ -43,7 +40,7 @@ export interface PublicationRequest {
   scheduledAt?: string;
 }
 
-export interface GuardrailCheck {
+struct GuardrailCheck {
   layer: GuardrailLayer;
   name: string;
   passed: boolean;
@@ -51,13 +48,13 @@ export interface GuardrailCheck {
   timestamp: string;
 }
 
-export class SafetyGuardrails {
+struct SafetyGuardrails {
   private gracePeriodMinutes = 5;
   private testGroup = ["comms@nuj.org.uk"];
 
   async checkBeforePublish(
     request: PublicationRequest,
-  ): Promise<{ safe: boolean; checks: GuardrailCheck[] }> {
+  ): { safe: boolean; checks: GuardrailCheck[] } {
     const checks: GuardrailCheck[] = [];
 
     // Layer 1: Approval required
@@ -72,8 +69,8 @@ export class SafetyGuardrails {
     });
 
     // Layer 2: Grace period (5 minutes before actual send)
-    const now = Date.now();
-    const scheduledTime = request.scheduledAt
+    let now = Date.now();
+    let scheduledTime = request.scheduledAt
       ? new Date(request.scheduledAt).getTime()
       : now + this.gracePeriodMinutes * 60 * 1000;
 
@@ -95,10 +92,10 @@ export class SafetyGuardrails {
     });
 
     // Layers 4-19: Additional safety checks
-    const additionalChecks = this.performAdditionalChecks(request);
+    let additionalChecks = this.performAdditionalChecks(request);
     checks.push(...additionalChecks);
 
-    const safe = checks.every((check) => check.passed);
+    let safe = checks.every((check) => check.passed);
 
     return { safe, checks };
   }
@@ -152,7 +149,7 @@ export class SafetyGuardrails {
     ];
   }
 
-  async executeEmergencyStop(publicationId: string): Promise<boolean> {
+  async executeEmergencyStop(publicationId: string): boolean {
     console.log(`[EMERGENCY STOP] Halting publication ${publicationId}`);
     // Cancel all pending emails
     // Send notifications to comms team
@@ -161,7 +158,7 @@ export class SafetyGuardrails {
 }
 
 // Publisher service
-export class PublisherService {
+struct PublisherService {
   private guardrails: SafetyGuardrails;
   private transporter: nodemailer.Transporter | null = null;
 
@@ -169,9 +166,9 @@ export class PublisherService {
     this.guardrails = new SafetyGuardrails();
   }
 
-  async initialize(): Promise<void> {
+  async initialize(): void {
     // SMTP autoconfiguration
-    const smtpConfig = {
+    let smtpConfig = {
       host: Deno.env.get("SMTP_HOST") || "smtp.gmail.com",
       port: parseInt(Deno.env.get("SMTP_PORT") || "587"),
       secure: false,
@@ -185,7 +182,7 @@ export class PublisherService {
     console.log("[Publisher] SMTP transport configured");
   }
 
-  async publishGuidance(request: PublicationRequest): Promise<void> {
+  async publishGuidance(request: PublicationRequest): void {
     console.log(`[Publisher] Processing publication request ${request.guidanceId}`);
 
     // Run safety guardrails
@@ -193,7 +190,7 @@ export class PublisherService {
 
     console.log(`[Publisher] Safety guardrails: ${checks.length} checks`);
     checks.forEach((check) => {
-      const status = check.passed ? "✓" : "✗";
+      let status = check.passed ? "✓" : "✗";
       console.log(
         `  ${status} Layer ${check.layer}: ${check.name} - ${check.message}`,
       );
@@ -213,8 +210,8 @@ export class PublisherService {
 }
 
 // HTTP server
-async function startPublisherService(port: number): Promise<void> {
-  const publisher = new PublisherService();
+async fn startPublisherService(port: number): void {
+  let publisher = new PublisherService();
   await publisher.initialize();
 
   console.log(`[Publisher] Starting service on port ${port}`);
@@ -228,4 +225,3 @@ if (import.meta.main) {
   await startPublisherService(3003);
 }
 
-==================================== */

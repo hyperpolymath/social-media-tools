@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module observatory;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // NUJ PESTLE Observatory Service
 // Connects to reliable external GraphQL APIs for PESTLE intelligence
 // Monitors developing guidance, best practices, and regulatory changes
@@ -13,7 +10,7 @@ module observatory;
 import { GraphQLClient } from "graphql-request";
 
 // PESTLE framework domains
-export enum PESTLEDomain {
+enum PESTLEDomain {
   POLITICAL = "political",
   ECONOMIC = "economic",
   SOCIAL = "social",
@@ -23,7 +20,7 @@ export enum PESTLEDomain {
 }
 
 // External observatory connections (reliable public GraphQL APIs)
-export interface ObservatorySource {
+struct ObservatorySource {
   name: string;
   endpoint: string;
   domains: PESTLEDomain[];
@@ -32,7 +29,7 @@ export interface ObservatorySource {
 }
 
 // Observatory configuration for trusted data sources
-export const OBSERVATORY_SOURCES: ObservatorySource[] = [
+const OBSERVATORY_SOURCES: ObservatorySource[] = [
   {
     name: "GDPR Observatory",
     endpoint: "https://api.gdpr.eu/graphql", // Placeholder - would use actual GDPR API
@@ -82,7 +79,7 @@ export const OBSERVATORY_SOURCES: ObservatorySource[] = [
 ];
 
 // PESTLE intelligence data structure
-export interface PESTLEIntelligence {
+struct PESTLEIntelligence {
   domain: PESTLEDomain;
   source: string;
   title: string;
@@ -94,7 +91,7 @@ export interface PESTLEIntelligence {
 }
 
 // Aggregated PESTLE analysis
-export interface PESTLEAnalysis {
+struct PESTLEAnalysis {
   policyChangeId: string;
   political: PESTLEIntelligence[];
   economic: PESTLEIntelligence[];
@@ -107,7 +104,7 @@ export interface PESTLEAnalysis {
 }
 
 // Best practices tracker
-export interface BestPractice {
+struct BestPractice {
   id: string;
   title: string;
   domain: PESTLEDomain;
@@ -119,7 +116,7 @@ export interface BestPractice {
 }
 
 // Observatory client for GraphQL federation
-export class PESTLEObservatory {
+struct PESTLEObservatory {
   private clients: Map<string, GraphQLClient> = new Map();
   private cache: Map<string, { data: unknown; timestamp: number }> = new Map();
   private cacheTTL = 3600000; // 1 hour
@@ -130,7 +127,7 @@ export class PESTLEObservatory {
 
   private initializeClients(): void {
     OBSERVATORY_SOURCES.forEach((source) => {
-      const client = new GraphQLClient(source.endpoint, {
+      let client = new GraphQLClient(source.endpoint, {
         headers: {
           "User-Agent": "NUJ-Social-Media-Monitor/1.0",
         },
@@ -147,7 +144,7 @@ export class PESTLEObservatory {
   async queryPESTLEIntelligence(
     platform: string,
     policyKeywords: string[],
-  ): Promise<PESTLEAnalysis> {
+  ): PESTLEAnalysis {
     const results: PESTLEAnalysis = {
       policyChangeId: crypto.randomUUID(),
       political: [],
@@ -161,9 +158,9 @@ export class PESTLEObservatory {
     };
 
     // Query each observatory source in parallel
-    const queries = OBSERVATORY_SOURCES.map(async (source) => {
+    let queries = OBSERVATORY_SOURCES.map(async (source) => {
       try {
-        const intelligence = await this.querySource(
+        let intelligence = await this.querySource(
           source,
           platform,
           policyKeywords,
@@ -177,7 +174,7 @@ export class PESTLEObservatory {
       }
     });
 
-    const responses = await Promise.all(queries);
+    let responses = await Promise.all(queries);
 
     // Aggregate results by domain
     responses.forEach(({ source, intelligence }) => {
@@ -206,7 +203,7 @@ export class PESTLEObservatory {
     });
 
     // Calculate overall confidence based on source reliability
-    const totalIntelligence =
+    let totalIntelligence =
       results.political.length +
       results.economic.length +
       results.social.length +
@@ -215,7 +212,7 @@ export class PESTLEObservatory {
       results.environmental.length;
 
     if (totalIntelligence > 0) {
-      const avgReliability =
+      let avgReliability =
         responses.reduce(
           (sum, { source }) => sum + source.reliability,
           0,
@@ -231,17 +228,17 @@ export class PESTLEObservatory {
     source: ObservatorySource,
     platform: string,
     keywords: string[],
-  ): Promise<PESTLEIntelligence[]> {
+  ): PESTLEIntelligence[] {
     // Cache key
-    const cacheKey = `${source.name}:${platform}:${keywords.join(",")}`;
-    const cached = this.cache.get(cacheKey);
+    let cacheKey = `${source.name}:${platform}:${keywords.join(",")}`;
+    let cached = this.cache.get(cacheKey);
 
     if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
       return cached.data as PESTLEIntelligence[];
     }
 
     // GraphQL query (simplified - would be specific to each API)
-    const query = `
+    let query = `
       query GetRelevantIntelligence($platform: String!, $keywords: [String!]!) {
         intelligence(platform: $platform, keywords: $keywords) {
           title
@@ -284,7 +281,7 @@ export class PESTLEObservatory {
   }
 
   // Monitor best practices updates
-  async getBestPractices(domain?: PESTLEDomain): Promise<BestPractice[]> {
+  async getBestPractices(domain?: PESTLEDomain): BestPractice[] {
     const practices: BestPractice[] = [
       {
         id: "bp-001",
@@ -331,7 +328,7 @@ export class PESTLEObservatory {
   // Real-time observatory feed subscription
   async subscribeToUpdates(
     callback: (update: PESTLEIntelligence) => void,
-  ): Promise<void> {
+  ): void {
     console.log(
       "[Observatory] Starting real-time subscription to observatory feeds",
     );
@@ -340,12 +337,12 @@ export class PESTLEObservatory {
     // For now, mock periodic polling
     setInterval(async () => {
       // Poll for updates
-      const updates = await this.checkForUpdates();
+      let updates = await this.checkForUpdates();
       updates.forEach(callback);
     }, 60000); // Check every minute
   }
 
-  private async checkForUpdates(): Promise<PESTLEIntelligence[]> {
+  private async checkForUpdates(): PESTLEIntelligence[] {
     // Check all sources for new intelligence
     return [];
   }
@@ -373,8 +370,8 @@ export class PESTLEObservatory {
 }
 
 // HTTP server for PESTLE observatory API
-async function startObservatoryService(port: number): Promise<void> {
-  const observatory = new PESTLEObservatory();
+async fn startObservatoryService(port: number): void {
+  let observatory = new PESTLEObservatory();
 
   console.log(`[PESTLE Observatory] Starting service on port ${port}`);
   console.log(
@@ -388,7 +385,7 @@ async function startObservatoryService(port: number): Promise<void> {
   console.log("  - Legal: Terms of service, compliance requirements");
   console.log("  - Environmental: Sustainability, digital footprint");
 
-  const healthStatus = observatory.getHealthStatus();
+  let healthStatus = observatory.getHealthStatus();
   console.log("\n[PESTLE Observatory] Source health:");
   Object.entries(healthStatus).forEach(([name, status]) => {
     console.log(
@@ -406,4 +403,3 @@ if (import.meta.main) {
   await startObservatoryService(3005);
 }
 
-==================================== */

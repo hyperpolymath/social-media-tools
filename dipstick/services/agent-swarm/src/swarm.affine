@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module swarm;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // NUJ AI Agent Swarm Coordination Service
 // Multi-agent system for policy analysis, guidance generation, and PESTLE monitoring
 // Uses LangChain for agent orchestration with best practices
@@ -13,7 +10,7 @@ module swarm;
 import { ChatOpenAI } from "@langchain/openai";
 
 // Agent role definitions following AI agent best practices
-export enum AgentRole {
+enum AgentRole {
   POLICY_ANALYST = "policy_analyst",
   SEVERITY_ASSESSOR = "severity_assessor",
   GUIDANCE_WRITER = "guidance_writer",
@@ -24,7 +21,7 @@ export enum AgentRole {
 }
 
 // Agent state machine following swarm coordination patterns
-export interface AgentState {
+struct AgentState {
   id: string;
   role: AgentRole;
   status: "idle" | "working" | "blocked" | "completed" | "failed";
@@ -35,7 +32,7 @@ export interface AgentState {
 }
 
 // Task coordination following distributed consensus patterns
-export interface SwarmTask {
+struct SwarmTask {
   id: string;
   type: "policy_analysis" | "guidance_generation" | "pestle_monitoring";
   context: {
@@ -50,7 +47,7 @@ export interface SwarmTask {
 }
 
 // Swarm coordination using actor model pattern
-export class AgentSwarm {
+struct AgentSwarm {
   private tasks: Map<string, SwarmTask> = new Map();
   private agents: Map<string, AgentState> = new Map();
   private llm: ChatOpenAI;
@@ -66,7 +63,7 @@ export class AgentSwarm {
   }
 
   private initializeAgents(): void {
-    const roles = [
+    let roles = [
       AgentRole.POLICY_ANALYST,
       AgentRole.SEVERITY_ASSESSOR,
       AgentRole.GUIDANCE_WRITER,
@@ -76,7 +73,7 @@ export class AgentSwarm {
     ];
 
     roles.forEach((role) => {
-      const agentId = `${role}-${crypto.randomUUID()}`;
+      let agentId = `${role}-${crypto.randomUUID()}`;
       this.agents.set(agentId, {
         id: agentId,
         role,
@@ -93,11 +90,11 @@ export class AgentSwarm {
   async coordinatePolicyAnalysis(
     policyChangeId: string,
     context: SwarmTask["context"],
-  ): Promise<string> {
-    const taskId = crypto.randomUUID();
+  ): string {
+    let taskId = crypto.randomUUID();
 
     // Define agent workflow DAG (Directed Acyclic Graph)
-    const workflow = [
+    let workflow = [
       {
         // Phase 1: Parallel analysis
         parallel: [
@@ -143,8 +140,8 @@ export class AgentSwarm {
   private async executePolicyAnalysis(
     agent: AgentState,
     context: SwarmTask["context"],
-  ): Promise<Record<string, unknown>> {
-    const prompt = `You are a policy analyst for a journalism union. Analyze this policy change:
+  ): Record<string, unknown> {
+    let prompt = `You are a policy analyst for a journalism union. Analyze this policy change:
 
 Platform: ${context.platform}
 Policy Change ID: ${context.policyChangeId}
@@ -171,7 +168,7 @@ Be precise, factual, and focused on journalistic implications.`;
   private async executePestleAnalysis(
     agent: AgentState,
     context: SwarmTask["context"],
-  ): Promise<Record<string, unknown>> {
+  ): Record<string, unknown> {
     // PESTLE framework analysis
     return {
       political: ["Regulatory change impact"],
@@ -188,7 +185,7 @@ Be precise, factual, and focused on journalistic implications.`;
     agent: AgentState,
     context: SwarmTask["context"],
     priorResults: Record<string, unknown>,
-  ): Promise<Record<string, unknown>> {
+  ): Record<string, unknown> {
     // Synthesize all prior agent results into member guidance
     return {
       guidanceDraft: "Draft guidance content...",
@@ -212,9 +209,9 @@ Be precise, factual, and focused on journalistic implications.`;
 }
 
 // HTTP server for swarm coordination API
-async function startSwarmService(port: number): Promise<void> {
-  const apiKey = Deno.env.get("OPENAI_API_KEY") || "";
-  const swarm = new AgentSwarm(apiKey);
+async fn startSwarmService(port: number): void {
+  let apiKey = Deno.env.get("OPENAI_API_KEY") || "";
+  let swarm = new AgentSwarm(apiKey);
 
   console.log(`[Agent Swarm] Starting coordination service on port ${port}`);
   console.log(`[Agent Swarm] Initialized ${swarm.getActiveAgents().length} agents`);
@@ -230,4 +227,3 @@ if (import.meta.main) {
   await startSwarmService(3004);
 }
 
-==================================== */

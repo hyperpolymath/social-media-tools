@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MPL-2.0
-// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // NUJ Social Media Ethics Monitor - Collector Service Library
 // Purpose: Public library interface for collector modules
 // Author: Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>

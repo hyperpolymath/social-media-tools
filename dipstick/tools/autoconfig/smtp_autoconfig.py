@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: MPL-2.0
-# Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 """
 SMTP Autoconfiguration Module
 Automatically discovers and configures SMTP settings
@@ -213,8 +211,7 @@ async def interactive_smtp_setup() -> Optional[SMTPConfig]:
     if config.auth_required:
         print(f"\n🔐 Authentication required")
         username = input("Username (or press Enter to use email): ").strip() or email
-        pwd_prompt = "Pass" + "word: "
-        password = input(pwd_prompt).strip()
+        password = input("Password: ").strip()
 
         config.username = username
         config.password = password
@@ -242,7 +239,7 @@ async def interactive_smtp_setup() -> Optional[SMTPConfig]:
     print(f"SMTP_HOST={config.host}")
     print(f"SMTP_PORT={config.port}")
     print(f"SMTP_USER={config.username or email}")
-    print(f"SMTP_PASS" + "WORD=YOUR_SECRET_HERE")
+    print(f"SMTP_PASSWORD=***")
     print(f"SMTP_FROM={email}")
     if config.use_tls:
         print(f"SMTP_TLS=true")

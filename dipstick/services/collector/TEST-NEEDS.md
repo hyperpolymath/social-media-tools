@@ -1,7 +1,3 @@
-<!--
-SPDX-License-Identifier: MPL-2.0
-Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
--->
 # Test Coverage Report - NUJ Collector Service
 
 ## CRG Grade: C (Comprehensive Testing)
@@ -240,7 +236,7 @@ cargo check
 ## Author & License
 
 - **Created by:** Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>
-- **License:** SPDX-License-Identifier: MPL-2.0
+- **License:** SPDX-License-Identifier: CC-BY-SA-4.0
 - **Date:** 2026-04-04
 - **Grade Achieved:** CRG C (Comprehensive Testing)
 

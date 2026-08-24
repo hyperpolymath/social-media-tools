@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
 //! Redis Cache Client — Distributed State Persistence.
 //!
 //! This module implements the caching layer for the Polygraph backend. 

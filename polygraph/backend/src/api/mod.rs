@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
 //! Polygraph API — Interface Definitions.
 //!
 //! This module acts as the public gatekeeper for the backend API. 

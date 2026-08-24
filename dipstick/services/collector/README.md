@@ -1,7 +1,3 @@
-<!--
-SPDX-License-Identifier: MPL-2.0
-Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
--->
 # NUJ Collector Service
 
 Platform monitoring and policy collection service built in Rust.

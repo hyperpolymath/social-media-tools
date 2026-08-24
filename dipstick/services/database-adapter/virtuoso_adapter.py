@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: MPL-2.0
-# Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 """
 Virtuoso Triple Store Adapter for NUJ Monitor
 Provides RDF/SPARQL interface for semantic policy tracking

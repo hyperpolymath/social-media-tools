@@ -329,6 +329,3 @@ dev:
     @echo "Press Ctrl+C to stop all services"
     @just up
     @trap 'just down' EXIT; just logs
-
-secret-scan-trufflehog:
-    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

@@ -1,47 +1,49 @@
-// SPDX-License-Identifier: MPL-2.0
-// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-= Changelog
+== Changelog
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on https://keepachangelog.com/en/1.0.0/[Keep a
+Changelog], and this project adheres to
+https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
-== [Unreleased]
+=== [Unreleased]
 
-=== Added
-- Initial project structure and documentation
-- SurrealDB + VerisimDB fabric for policy metadata and immutable time-series
-- Collector service (Rust) for platform monitoring
-- Analyzer service (ReScript + Deno + WASM) for NLP analysis
-- Publisher service (Deno) for email delivery
-- Dashboard service (Elixir/Phoenix) for web UI
-- Chainguard container + Selur/Svalinn/Vörðr orchestration
-- CI/CD pipelines (GitHub Actions)
-- Monitoring stack (Prometheus, Grafana, Loki)
-- Development environment scripts
-- CLI tools for database management and operations
-- Comprehensive README and documentation
-- 19-layer safety guardrail system
-- API documentation (OpenAPI spec)
+==== Added
 
-=== Security
-- Implemented encryption for platform credentials
-- Added role-based access control
-- Enabled complete audit logging
-- GDPR compliance measures
-- Rate limiting and request validation
+* Initial project structure and documentation
+* SurrealDB + VerisimDB core data fabric for policy metadata, snapshots,
+and change events
+* Collector service (Rust) for platform monitoring
+* Analyzer service (ReScript + Deno + WASM) for type-safe NLP analysis
+* Publisher service (Deno) for guarded email delivery
+* Dashboard service (Elixir/Phoenix) for real-time approvals
+* Chainguard container build + Selur/Svalinn/Vörðr orchestration
+* CI/CD pipelines (GitHub Actions)
+* Monitoring stack (Prometheus, Grafana, Loki)
+* Development environment scripts and CLI tools
+* Comprehensive README, docs, and CLI manual
+* 19-layer safety guardrail system
+* API documentation (OpenAPI spec)
 
-== [0.1.0] - 2025-11-22
+==== Security
 
-=== Initial Release
-- Project inception
-- Architecture design complete
-- Phase 0: Foundation built
+* Implemented encryption for platform credentials
+* Added role-based access control
+* Enabled complete audit logging
+* GDPR compliance measures
+* Rate limiting and request validation
 
----
+=== [0.1.0] - 2025-11-22
 
-== Version History
+==== Initial Release
 
-- **0.1.0** - Initial development build
-- **1.0.0** - TBD (Production release target: Phase 6 completion)
+* Project inception
+* Architecture design complete
+* Phase 0: Foundation built
+
+'''''
+
+=== Version History
+
+* *0.1.0* - Initial development build
+* *1.0.0* - TBD (Production release target: Phase 6 completion)

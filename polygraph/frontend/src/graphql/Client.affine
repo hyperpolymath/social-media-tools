@@ -1,7 +1,26 @@
 // SPDX-License-Identifier: MPL-2.0
-// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
-// Ported via Harvard Engine bulk-processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Client;
 
-// TODO: Complete semantic implementation
+// Apollo GraphQL client configuration
+
+open ApolloClient
+
+fn client = {
+  fn httpLink = HttpLink.make(~uri="http://localhost:8000/graphql", ())
+
+  fn cache = InMemoryCache.make()
+
+  make(
+    ~link=httpLink,
+    ~cache,
+    ~defaultOptions=DefaultOptions.make(
+      ~watchQuery=DefaultWatchQueryOptions.make(~fetchPolicy=CacheFirst, ()),
+      ~query=DefaultQueryOptions.make(~fetchPolicy=CacheFirst, ()),
+      (),
+    ),
+    (),
+  )
+}
+

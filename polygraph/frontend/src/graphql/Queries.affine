@@ -1,7 +1,34 @@
 // SPDX-License-Identifier: MPL-2.0
-// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
-// Ported via Harvard Engine bulk-processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Queries;
 
-// TODO: Complete semantic implementation
+// GraphQL queries
+
+module GetClaimQuery = %graphql(`
+  query GetClaim($id: String!) {
+    claim(id: $id) {
+      id
+      text
+      url
+      platform
+      author
+      textHash
+      createdAt
+      updatedAt
+      status
+    }
+  }
+`)
+
+module ListClaimsQuery = %graphql(`
+  query ListClaims($skip: Int, $limit: Int) {
+    claims(skip: $skip, limit: $limit) {
+      id
+      text
+      status
+      createdAt
+    }
+  }
+`)
+

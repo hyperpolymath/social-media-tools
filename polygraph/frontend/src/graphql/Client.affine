@@ -1,11 +1,16 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine (Semantic pass)
+
+module Client;
+
 // Apollo GraphQL client configuration
 
 open ApolloClient
 
-let client = {
-  let httpLink = HttpLink.make(~uri="http://localhost:8000/graphql", ())
+fn client = {
+  fn httpLink = HttpLink.make(~uri="http://localhost:8000/graphql", ())
 
-  let cache = InMemoryCache.make()
+  fn cache = InMemoryCache.make()
 
   make(
     ~link=httpLink,
@@ -18,3 +23,4 @@ let client = {
     (),
   )
 }
+

@@ -1,17 +1,18 @@
-# Deployment Guide
+== Deployment Guide
 
-## Prerequisites
+=== Prerequisites
 
-- Server with Linux (Ubuntu 22.04+ recommended)
-- Podman or Docker installed
-- Domain name configured (for production)
-- SSL certificate (Let's Encrypt recommended)
+* Server with Linux (Ubuntu 22.04+ recommended)
+* Podman or Docker installed
+* Domain name configured (for production)
+* SSL certificate (Let’s Encrypt recommended)
 
-## Production Deployment with Podman Compose
+=== Production Deployment with Podman Compose
 
-### 1. Server Setup
+==== 1. Server Setup
 
-```bash
+[source,bash]
+----
 # Update system
 sudo apt update && sudo apt upgrade -y
 
@@ -20,30 +21,33 @@ sudo apt install -y podman podman-compose
 
 # Install other dependencies
 sudo apt install -y git nginx certbot python3-certbot-nginx
-```
+----
 
-### 2. Clone Repository
+==== 2. Clone Repository
 
-```bash
+[source,bash]
+----
 cd /opt
 sudo git clone https://github.com/hyperpolymath/social-media-polygraph.git
 cd social-media-polygraph
-```
+----
 
-### 3. Configure Environment
+==== 3. Configure Environment
 
-```bash
+[source,bash]
+----
 # Copy and edit environment files
 cd infrastructure/podman
 cp .env.example .env
 
 # Edit .env with production values
 nano .env
-```
+----
 
-**Important production settings:**
+*Important production settings:*
 
-```env
+[source,env]
+----
 # Generate strong secrets
 SECRET_KEY=$(openssl rand -hex 32)
 JWT_SECRET_KEY=$(openssl rand -hex 32)
@@ -58,11 +62,12 @@ ARANGO_ROOT_PASSWORD=$(openssl rand -base64 24)
 # Disable debug
 DEBUG=false
 ENVIRONMENT=production
-```
+----
 
-### 4. Start Services
+==== 4. Start Services
 
-```bash
+[source,bash]
+----
 # Start all services
 podman-compose up -d
 
@@ -71,15 +76,17 @@ podman-compose ps
 
 # View logs
 podman-compose logs -f
-```
+----
 
-### 5. Configure Nginx Reverse Proxy
+==== 5. Configure Nginx Reverse Proxy
 
-```bash
+[source,bash]
+----
 sudo nano /etc/nginx/sites-available/polygraph
-```
+----
 
-```nginx
+[source,nginx]
+----
 # Backend API
 server {
     listen 80;
@@ -107,9 +114,10 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
-```
+----
 
-```bash
+[source,bash]
+----
 # Enable site
 sudo ln -s /etc/nginx/sites-available/polygraph /etc/nginx/sites-enabled/
 
@@ -118,22 +126,24 @@ sudo nginx -t
 
 # Restart Nginx
 sudo systemctl restart nginx
-```
+----
 
-### 6. SSL with Let's Encrypt
+==== 6. SSL with Let’s Encrypt
 
-```bash
+[source,bash]
+----
 # Obtain certificates
 sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com
 sudo certbot --nginx -d api.yourdomain.com
 
 # Auto-renewal is set up automatically
 sudo systemctl status certbot.timer
-```
+----
 
-### 7. Firewall Configuration
+==== 7. Firewall Configuration
 
-```bash
+[source,bash]
+----
 # Allow HTTP, HTTPS, and SSH
 sudo ufw allow 22/tcp
 sudo ufw allow 80/tcp
@@ -141,13 +151,14 @@ sudo ufw allow 443/tcp
 
 # Enable firewall
 sudo ufw enable
-```
+----
 
-## Database Initialization
+=== Database Initialization
 
-### ArangoDB
+==== ArangoDB
 
-```bash
+[source,bash]
+----
 # Access ArangoDB web interface
 # https://api.yourdomain.com:8529
 
@@ -155,17 +166,19 @@ sudo ufw enable
 podman exec -it polygraph-arangodb arangosh
 
 # Create initial admin user, databases, etc.
-```
+----
 
-### Backups
+==== Backups
 
 Create backup script:
 
-```bash
+[source,bash]
+----
 sudo nano /opt/backup-polygraph.sh
-```
+----
 
-```bash
+[source,bash]
+----
 #!/bin/bash
 BACKUP_DIR="/opt/backups/polygraph"
 DATE=$(date +%Y%m%d_%H%M%S)
@@ -190,31 +203,34 @@ podman cp polygraph-xtdb:/tmp/xtdb_backup.tar.gz \
 find $BACKUP_DIR -type f -mtime +30 -delete
 
 echo "Backup completed: $DATE"
-```
+----
 
-```bash
+[source,bash]
+----
 # Make executable
 sudo chmod +x /opt/backup-polygraph.sh
 
 # Add to crontab (daily at 2 AM)
 echo "0 2 * * * /opt/backup-polygraph.sh" | sudo crontab -
-```
+----
 
-## Monitoring
+=== Monitoring
 
-### System Monitoring
+==== System Monitoring
 
-```bash
+[source,bash]
+----
 # Install monitoring tools
 sudo apt install -y prometheus prometheus-node-exporter grafana
 
 # Configure Prometheus
 sudo nano /etc/prometheus/prometheus.yml
-```
+----
 
-### Application Logs
+==== Application Logs
 
-```bash
+[source,bash]
+----
 # View all logs
 podman-compose logs -f
 
@@ -223,13 +239,14 @@ podman-compose logs -f backend
 
 # Export logs to file
 podman-compose logs > /var/log/polygraph.log
-```
+----
 
-### Health Checks
+==== Health Checks
 
 Create monitoring script:
 
-```bash
+[source,bash]
+----
 #!/bin/bash
 # /opt/health-check.sh
 
@@ -248,25 +265,27 @@ else
     echo "Frontend: FAILED"
     # Send alert
 fi
-```
+----
 
-## Scaling
+=== Scaling
 
-### Horizontal Scaling
+==== Horizontal Scaling
 
 For high traffic, run multiple backend instances:
 
-```yaml
+[source,yaml]
+----
 # In compose.yaml
 services:
   backend:
     deploy:
       replicas: 3
-```
+----
 
 Use load balancer (Nginx):
 
-```nginx
+[source,nginx]
+----
 upstream backend {
     least_conn;
     server localhost:8000;
@@ -279,33 +298,34 @@ server {
         proxy_pass http://backend;
     }
 }
-```
+----
 
-### Database Scaling
+==== Database Scaling
 
-- **ArangoDB**: Set up cluster mode
-- **Dragonfly**: Configure replication
-- **XTDB**: Use distributed deployment
+* *ArangoDB*: Set up cluster mode
+* *Dragonfly*: Configure replication
+* *XTDB*: Use distributed deployment
 
-## Security Checklist
+=== Security Checklist
 
-- [ ] Change all default passwords
-- [ ] Use strong secret keys
-- [ ] Enable firewall
-- [ ] Configure SSL/TLS
-- [ ] Set up regular backups
-- [ ] Enable fail2ban for SSH
-- [ ] Configure rate limiting
-- [ ] Set up monitoring and alerts
-- [ ] Review and update dependencies regularly
-- [ ] Enable audit logging
-- [ ] Implement least-privilege access
+* [ ] Change all default passwords
+* [ ] Use strong secret keys
+* [ ] Enable firewall
+* [ ] Configure SSL/TLS
+* [ ] Set up regular backups
+* [ ] Enable fail2ban for SSH
+* [ ] Configure rate limiting
+* [ ] Set up monitoring and alerts
+* [ ] Review and update dependencies regularly
+* [ ] Enable audit logging
+* [ ] Implement least-privilege access
 
-## Troubleshooting
+=== Troubleshooting
 
-### Container won't start
+==== Container won’t start
 
-```bash
+[source,bash]
+----
 # Check logs
 podman logs polygraph-backend
 
@@ -314,21 +334,23 @@ podman events
 
 # Restart service
 podman-compose restart backend
-```
+----
 
-### Database connection issues
+==== Database connection issues
 
-```bash
+[source,bash]
+----
 # Check database is running
 podman ps | grep arango
 
 # Test connection
 podman exec -it polygraph-backend python -c "from app.db import arango_manager; arango_manager.connect()"
-```
+----
 
-### Performance issues
+==== Performance issues
 
-```bash
+[source,bash]
+----
 # Check resource usage
 podman stats
 
@@ -337,11 +359,12 @@ df -h
 
 # Check memory
 free -h
-```
+----
 
-## Updating
+=== Updating
 
-```bash
+[source,bash]
+----
 # Pull latest code
 cd /opt/social-media-polygraph
 sudo git pull
@@ -355,11 +378,12 @@ podman-compose up -d
 
 # Check logs
 podman-compose logs -f
-```
+----
 
-## Rollback
+=== Rollback
 
-```bash
+[source,bash]
+----
 # Stop containers
 podman-compose down
 
@@ -369,4 +393,4 @@ git checkout <previous-commit>
 # Rebuild and start
 podman-compose build
 podman-compose up -d
-```
+----

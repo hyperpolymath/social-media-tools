@@ -1,65 +1,52 @@
-// SPDX-License-Identifier: MPL-2.0
-// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-= Maintainers
-:toc: preamble
+// SPDX-License-Identifier: MPL-2.0 = Maintainers :toc: preamble
+
+This document lists the maintainers of this project and their
+responsibilities.
 
 == Current Maintainers
 
-[cols="2,3,2",options="header"]
+[cols="`2,3,2`",options="`header`"] |=== | Name | Role | Contact
+
+[verse]
+--
+Jonathan D.A. Jewell
+Lead Maintainer
+https://github.com/hyperpolymath[@hyperpolymath]
+--
+
 |===
-| Name | Role | Contact
 
-| Jonathan D.A. Jewell | Sole Maintainer | https://github.com/hyperpolymath[@hyperpolymath]
-|===
+== Responsibilities
 
-== Maintainer Responsibilities
-
-As the sole maintainer, all responsibilities apply to @hyperpolymath:
+Maintainers are responsible for:
 
 * Reviewing and merging pull requests
 * Triaging issues and feature requests
 * Ensuring code quality and security standards
 * Managing releases and versioning
-* Upholding the project's Code of Conduct
-* Maintaining documentation and examples
-* Responding to security vulnerabilities
-
-== Contribution Process
-
-This is a sole-maintainer project. All contributions are welcome via:
-
-1. **Issues**: Report bugs, request features, ask questions
-2. **Pull Requests**: Submit improvements for review
-3. **Discussions**: Engage in community discussions
-
-All contributions will be reviewed by the maintainer.
-
-== Decision Making
-
-* Routine decisions (bug fixes, minor improvements): Made by maintainer
-* Significant changes: Discussed in issues before implementation
-* Breaking changes: Announced in advance with migration path
+* Upholding the project’s code of conduct
 
 == Becoming a Maintainer
 
-This project currently has a single maintainer. If you're interested in becoming a co-maintainer:
+Contributors who demonstrate:
 
-1. Demonstrate consistent, high-quality contributions
-2. Show understanding of project goals and standards
-3. Participate constructively in discussions
-4. Express interest to the current maintainer
+* Consistent, high-quality contributions
+* Understanding of the project’s goals and standards
+* Constructive participation in discussions
+* Commitment to the project’s long-term health
 
-Co-maintainers may be added at the discretion of the current maintainer.
+May be invited to become maintainers at the discretion of existing
+maintainers.
+
+== Decision Making
+
+* Routine decisions (bug fixes, minor improvements) can be made by any
+maintainer
+* Significant changes require discussion and consensus among maintainers
+* Breaking changes or major features should be discussed in issues
+before implementation
 
 == Contact
 
-For questions about project governance:
-
-* Open a GitHub issue in this repository
-* Contact: https://github.com/hyperpolymath
-
-== See Also
-
-* link:GOVERNANCE.adoc[Governance Model]
-* link:CODE_OF_CONDUCT.md[Code of Conduct]
-* link:CONTRIBUTING.adoc[Contributing Guide]
+For questions about project governance, open an issue or contact the
+maintainers listed above.

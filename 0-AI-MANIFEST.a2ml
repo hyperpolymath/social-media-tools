@@ -36,7 +36,7 @@ social-media-tools/
 ├── polygraph/              # Fact-checking framework
 ├── .machine_readable/      # SCM checkpoint files
 ├── .github/workflows/      # CI/CD (17 standard workflows)
-└── contractiles/           # Formal contracts (k9, dust, lust, must, trust)
+└── contractiles/           # Formal contracts (k9, dust, intend, must, trust)
 ```
 
 ## Session Lifecycle Hooks

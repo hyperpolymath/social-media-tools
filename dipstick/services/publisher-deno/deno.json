@@ -1,0 +1,15 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --allow-env --watch src/publisher.ts",
+    "start": "deno run --allow-net --allow-read --allow-env src/publisher.ts"
+  },
+  "imports": {
+    "@std/": "https://deno.land/std@0.208.0/",
+    "nodemailer": "npm:nodemailer@6.9.7",
+    "bull": "npm:bull@4.12.0"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.unstable"],
+    "strict": true
+  }
+}

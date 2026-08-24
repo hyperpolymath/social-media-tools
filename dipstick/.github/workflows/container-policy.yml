@@ -1,9 +1,10 @@
-# SPDX-License-Identifier: MPL-2.0
+# SPDX-License-Identifier: MPL-2.0-or-later
 name: Container Policy
 on: [push, pull_request]
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Enforce container policy
@@ -14,12 +15,12 @@ jobs:
             echo "❌ New Dockerfile detected. Use Containerfile instead."
             exit 1
           fi
-          
+
           # Check for docker command usage in scripts
           DOCKER_CMD=$(grep -r "docker build\|docker run\|docker push" --include="*.sh" --include="*.yml" --include="*.yaml" . 2>/dev/null | grep -v "nerdctl\|podman" | head -5 || true)
           if [ -n "$DOCKER_CMD" ]; then
             echo "⚠️ docker command found. Prefer nerdctl or podman:"
             echo "$DOCKER_CMD"
           fi
-          
+
           echo "✅ Container policy check passed"

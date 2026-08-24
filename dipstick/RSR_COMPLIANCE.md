@@ -1,3 +1,7 @@
+<!--
+SPDX-License-Identifier: MPL-2.0
+Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+-->
 # RSR Compliance Status - NUJ Social Media Ethics Monitor
 
 ## Current Compliance Score: 8.6/10 (86% - Gold Level)

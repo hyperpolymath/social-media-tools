@@ -1,14 +1,17 @@
-// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell
 
 = Social Media Tools
+image:https://img.shields.io/badge/OpenSSF-Best_Practices-green?logo=openssourcesecurity[OpenSSF Best Practices,link="https://www.bestpractices.dev/en/projects/new?repo_url=https://github.com/hyperpolymath/social-media-tools"]
+
 
 :toc: macro
 :toclevels: 3
 :icons: font
 :source-highlighter: rouge
 
-image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[License: MPL-2.0,link="https://opensource.org/licenses/MPL-2.0"]
 
 Social media analysis, monitoring, and verification tools. A monorepo containing two major projects built for the National Union of Journalists (NUJ) and general-purpose fact-checking workflows.
 
@@ -34,7 +37,7 @@ Policy change monitoring and impact analysis for journalists. Tracks platform te
 |Platform monitoring, change detection, SHA256 checksumming
 
 |Analyzer
-|AfineScript + Deno + WASM
+|ReScript + Deno + WASM
 |3002
 |NLP policy analysis, sentiment analysis, severity classification
 
@@ -74,7 +77,7 @@ Policy change monitoring and impact analysis for journalists. Tracks platform te
 |Safety-critical terminal interface with formal verification
 
 |Gateway
-|AffineScript/Deno GraphQL
+|ReScript/Deno GraphQL
 |8000
 |Federated schema stitching across all services
 |===
@@ -98,11 +101,11 @@ AI-powered fact-checking and misinformation detection with multi-source verifica
 |GraphQL API, ML modules, WASM plugin system
 
 |Frontend
-|AffineScript + React 18 + TailwindCSS
+|ReScript + React 18 + TailwindCSS
 |Verification interface, credibility visualisation, analytics
 
 |Browser Extension
-|AffineScript
+|ReScript
 |In-context fact-checking overlay for web browsing
 
 |Elixir Services
@@ -110,7 +113,7 @@ AI-powered fact-checking and misinformation detection with multi-source verifica
 |Distributed processing, real-time subscriptions
 |===
 
-**Data Layer:** Verisim (multi-model), XTDB (temporal), Dragonfly (cache)
+**Data Layer:** ArangoDB (multi-model), XTDB (temporal), Dragonfly (cache)
 
 See link:polygraph/README.adoc[polygraph/README.adoc] and link:polygraph/DEVELOPMENT_SUMMARY.md[polygraph/DEVELOPMENT_SUMMARY.md] for details.
 
@@ -141,7 +144,7 @@ Neither component currently integrates with link:https://github.com/hyperpolymat
 |Low
 |===
 
-Conversion requires migrating React/LiveView components to PanLL's panel architecture (AffineScript-native).
+Conversion requires migrating React/LiveView components to PanLL's panel architecture (ReScript-native).
 
 == Container Stack
 
@@ -170,11 +173,11 @@ social-media-tools/
 │   └── tools/             # Development tooling
 ├── polygraph/             # Fact-checking & verification
 │   ├── backend/           # Rust GraphQL API
-│   ├── frontend/          # AffineScript + React UI
+│   ├── frontend/          # ReScript + React UI
 │   ├── browser-extension/ # Browser overlay
 │   ├── elixir/            # Distributed processing
 │   └── infrastructure/    # Database schemas, containers
-├── contractiles/          # Operational templates (must/trust/dust/lust/k9)
+├── contractiles/          # Operational templates (must/trust/dust/intend/k9)
 ├── .machine_readable/     # SCM checkpoints (STATE, META, ECOSYSTEM)
 └── 0-AI-MANIFEST.a2ml     # AI agent entry point
 ----
@@ -202,6 +205,6 @@ See link:ROADMAP.adoc[ROADMAP.adoc] for the full phase plan and link:TOPOLOGY.md
 
 == License
 
-link:LICENSE[Palimpsest License (MPL-2.0)]
+This project is licensed under the Mozilla Public License, v. 2.0. See the `LICENSE` file for details.
 
-Copyright (c) 2025-2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+SPDX-License-Identifier: MPL-2.0

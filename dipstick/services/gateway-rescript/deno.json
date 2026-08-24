@@ -1,0 +1,14 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --allow-env --watch src/Gateway.bs.js",
+    "start": "deno run --allow-net --allow-read --allow-env src/Gateway.bs.js",
+    "build": "rescript build",
+    "codegen": "graphql-codegen"
+  },
+  "imports": {
+    "@std/": "https://deno.land/std@0.208.0/",
+    "graphql": "npm:graphql@16.8.1",
+    "graphql-yoga": "npm:graphql-yoga@5.0.0",
+    "@apollo/federation": "npm:@apollo/subgraph@2.5.7"
+  }
+}

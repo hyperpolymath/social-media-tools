@@ -1,9 +1,10 @@
-# SPDX-License-Identifier: MPL-2.0
+# SPDX-License-Identifier: MPL-2.0-or-later
 name: Language Policy Enforcement
 on: [push, pull_request]
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Enforce language policies
@@ -15,7 +16,7 @@ jobs:
             echo "$NEW_PY"
             exit 1
           fi
-          
+
           # Block new Ruby files
           NEW_RB=$(git diff --name-only --diff-filter=A HEAD~1 2>/dev/null | grep -E '\.rb$' || true)
           if [ -n "$NEW_RB" ]; then
@@ -23,7 +24,7 @@ jobs:
             echo "$NEW_RB"
             exit 1
           fi
-          
+
           # Block new Perl files
           NEW_PL=$(git diff --name-only --diff-filter=A HEAD~1 2>/dev/null | grep -E '\.(pl|pm)$' || true)
           if [ -n "$NEW_PL" ]; then
@@ -31,7 +32,7 @@ jobs:
             echo "$NEW_PL"
             exit 1
           fi
-          
+
           # Block new Java/Kotlin (except in LSP projects)
           if [[ ! "$GITHUB_REPOSITORY" =~ "language-server" ]]; then
             NEW_JAVA=$(git diff --name-only --diff-filter=A HEAD~1 2>/dev/null | grep -E '\.(java|kt)$' || true)
@@ -41,5 +42,5 @@ jobs:
               exit 1
             fi
           fi
-          
+
           echo "✅ Language policy check passed"

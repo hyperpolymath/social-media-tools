@@ -1,0 +1,16 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --allow-env --watch src/swarm.ts",
+    "start": "deno run --allow-net --allow-read --allow-env src/swarm.ts"
+  },
+  "imports": {
+    "@std/": "https://deno.land/std@0.208.0/",
+    "openai": "npm:openai@4.20.1",
+    "langchain": "npm:langchain@0.0.208",
+    "@langchain/openai": "npm:@langchain/openai@0.0.13"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.unstable"],
+    "strict": true
+  }
+}

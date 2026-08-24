@@ -1,0 +1,17 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-read --allow-env --watch src/Main.bs.js",
+    "start": "deno run --allow-net --allow-read --allow-env src/Main.bs.js",
+    "build": "rescript build",
+    "clean": "rescript clean",
+    "build:wasm": "cd wasm && cargo build --release --target wasm32-unknown-unknown"
+  },
+  "imports": {
+    "@std/": "https://deno.land/std@0.208.0/",
+    "graphql": "npm:graphql@16.8.1",
+    "openai": "npm:openai@4.20.1"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.unstable"]
+  }
+}

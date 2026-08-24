@@ -1,0 +1,35 @@
+{
+  "name": "nuj-analyzer",
+  "version": "0.1.0",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "bs-dependencies": [
+    "@rescript/core"
+  ],
+  "warnings": {
+    "error": "+101"
+  },
+  "ppx-flags": [],
+  "bsc-flags": [
+    "-open RescriptCore"
+  ],
+  "gentypeconfig": {
+    "language": "typescript",
+    "shims": {},
+    "debug": {
+      "all": false,
+      "basic": false
+    }
+  }
+}

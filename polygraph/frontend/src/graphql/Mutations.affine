@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine (Semantic pass)
+
+module Mutations;
+
 // GraphQL mutations
 
 module VerifyClaimMutation = %graphql(`
@@ -19,3 +24,4 @@ module VerifyClaimMutation = %graphql(`
     }
   }
 `)
+

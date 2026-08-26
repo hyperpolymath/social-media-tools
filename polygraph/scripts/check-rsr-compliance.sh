@@ -75,7 +75,7 @@ echo ""
 print_header "1. Documentation Compliance"
 check_file "README.adoc"
 check_file "LICENSE"
-check_file "LICENSE-PALIMPSEST.txt"
+check_file "LICENSES/PMPL-1.0-or-later.txt"
 check_file "SECURITY.md"
 check_file "CODE_OF_CONDUCT.md"
 check_file "CONTRIBUTING.adoc"
@@ -186,13 +186,13 @@ echo ""
 # Category 9: Licensing
 print_header "9. Dual Licensing"
 check_file "LICENSE"
-check_file "LICENSE-PALIMPSEST.txt"
+check_file "LICENSES/PMPL-1.0-or-later.txt"
 
 # Check for license headers
 if grep -q "MIT" LICENSE 2>/dev/null; then
     check_pass "MIT License detected"
 fi
-if grep -q "Palimpsest" LICENSE-PALIMPSEST.txt 2>/dev/null; then
+if grep -q "Palimpsest" LICENSES/PMPL-1.0-or-later.txt 2>/dev/null; then
     check_pass "Palimpsest License detected"
 fi
 echo ""

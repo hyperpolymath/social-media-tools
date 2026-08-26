@@ -73,13 +73,13 @@ echo ""
 
 # Category 1: Documentation
 print_header "1. Documentation Compliance"
-check_file "README.md"
+check_file "README.adoc"
 check_file "LICENSE"
 check_file "LICENSE-PALIMPSEST.txt"
 check_file "SECURITY.md"
 check_file "CODE_OF_CONDUCT.md"
-check_file "CONTRIBUTING.md"
-check_file "MAINTAINERS.md"
+check_file "CONTRIBUTING.adoc"
+check_file "MAINTAINERS.adoc"
 check_file "CHANGELOG.md"
 echo ""
 
@@ -199,22 +199,22 @@ echo ""
 
 # Category 10: Community Governance (TPCF)
 print_header "10. Tri-Perimeter Contribution Framework (TPCF)"
-if grep -q -i "perimeter" MAINTAINERS.md 2>/dev/null; then
-    check_pass "TPCF perimeter definitions found in MAINTAINERS.md"
+if grep -q -i "perimeter" MAINTAINERS.adoc 2>/dev/null; then
+    check_pass "TPCF perimeter definitions found in MAINTAINERS.adoc"
 else
     check_warn "TPCF perimeter definitions not clearly documented"
 fi
 
-if grep -q -i "perimeter" CONTRIBUTING.md 2>/dev/null; then
-    check_pass "TPCF mentioned in CONTRIBUTING.md"
+if grep -q -i "perimeter" CONTRIBUTING.adoc 2>/dev/null; then
+    check_pass "TPCF mentioned in CONTRIBUTING.adoc"
 else
-    check_warn "TPCF should be mentioned in CONTRIBUTING.md"
+    check_warn "TPCF should be mentioned in CONTRIBUTING.adoc"
 fi
 echo ""
 
 # Category 11: Offline-First
 print_header "11. Offline-First Capabilities"
-if grep -q -i "cache" README.md 2>/dev/null || grep -q -i "offline" README.md 2>/dev/null; then
+if grep -q -i "cache" README.adoc 2>/dev/null || grep -q -i "offline" README.adoc 2>/dev/null; then
     check_pass "Caching/offline capabilities mentioned"
 else
     check_warn "Limited offline-first support (requires network APIs)"

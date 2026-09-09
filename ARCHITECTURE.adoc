@@ -9,15 +9,19 @@ for clarity, scalability, and long-term sustainability.
 
 ....
 .
-├── src/           # Source code
-├── tests/        # Test suites
-├── docs/         # Documentation
-├── scripts/      # Utility scripts
-├── config/       # Configuration files
-├── LICENSE       # License file
-├── LICENSES/     # Full license texts
-└── README.adoc   # Project documentation
+├── dipstick/           # Engagement metrics module
+├── polygraph/          # Authenticity/bot-detection module
+├── tests/              # Test suites
+├── docs/               # Documentation
+├── contractiles/       # Contractile validation assets
+├── .machine_readable/  # Machine-readable STATE tracking
+├── Justfile            # Task automation
+├── LICENSE             # License file
+├── LICENSES/           # Full license texts
+└── README.adoc         # Project documentation
 ....
+
+See link:TOPOLOGY.adoc[] for the full system topology diagram.
 
 === Design Principles
 

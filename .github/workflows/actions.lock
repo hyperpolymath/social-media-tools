@@ -4,19 +4,19 @@
 version: 'v0.0.2'
 workflows:
     '.github/workflows/boj-build.yml':
-        - 'actions/checkout@v6.0.2'
+        - 'actions/checkout@v7.0.1'
     '.github/workflows/casket-pages.yml':
-        - 'actions/cache@v5.0.5'
-        - 'actions/checkout@v6.0.2'
+        - 'actions/cache@v6.1.0'
+        - 'actions/checkout@v7.0.1'
         - 'actions/configure-pages@v6.0.0'
-        - 'actions/deploy-pages@v5.0.0'
+        - 'actions/deploy-pages@v5.0.1'
         - 'actions/upload-pages-artifact@v5.0.0'
-        - 'haskell-actions/setup@v2.11.0'
+        - 'haskell-actions/setup@v2.12.0'
     '.github/workflows/codeql.yml':
-        - 'actions/checkout@v6.0.2'
-        - 'github/codeql-action@v4.36.0'
+        - 'actions/checkout@v7.0.1'
+        - 'github/codeql-action@v4.37.9'
     '.github/workflows/dogfood-gate.yml':
-        - 'actions/checkout@v6.0.2'
+        - 'actions/checkout@v7.0.1'
     '.github/workflows/governance.yml': []
     '.github/workflows/hypatia-scan.yml': []
     '.github/workflows/instant-sync.yml':
@@ -31,24 +31,14 @@ workflows:
         - 'hyperpolymath/smtp-notify-action@v0.2.0'
     '.github/workflows/scorecard.yml': []
     '.github/workflows/secret-scanner.yml':
-        - 'actions/checkout@v4.4.0'
+        - 'actions/checkout@v7.0.1'
         - 'trufflesecurity/trufflehog@main'
 dependencies:
-    'actions/cache@v5.0.5':
-        ref: 'v5.0.5'
-        commit: 'sha1-27d5ce7f107fe9357f9df03efb73ab90386fccae'
+    'actions/cache@v6.1.0':
+        ref: 'v6.1.0'
+        commit: 'sha1-55cc8345863c7cc4c66a329aec7e433d2d1c52a9'
         owner_id: 44036562
         repo_id: 215566462
-    'actions/checkout@v4.4.0':
-        ref: 'v4.4.0'
-        commit: 'sha1-11d5960a326750d5838078e36cf38b85af677262'
-        owner_id: 44036562
-        repo_id: 197814629
-    'actions/checkout@v6.0.2':
-        ref: 'v6.0.2'
-        commit: 'sha1-de0fac2e4500dabe0009e67214ff5f5447ce83dd'
-        owner_id: 44036562
-        repo_id: 197814629
     'actions/checkout@v7.0.1':
         ref: 'v7.0.1'
         commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
@@ -59,9 +49,9 @@ dependencies:
         commit: 'sha1-45bfe0192ca1faeb007ade9deae92b16b8254a0d'
         owner_id: 44036562
         repo_id: 513659658
-    'actions/deploy-pages@v5.0.0':
-        ref: 'v5.0.0'
-        commit: 'sha1-cd2ce8fcbc39b97be8ca5fce6e763baed58fa128'
+    'actions/deploy-pages@v5.0.1':
+        ref: 'v5.0.1'
+        commit: 'sha1-368f82528645a54fb793d4d04e342629a3f51346'
         owner_id: 44036562
         repo_id: 438112499
     'actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f':
@@ -76,14 +66,14 @@ dependencies:
         repo_id: 496012378
         uses:
             - 'actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f'
-    'github/codeql-action@v4.36.0':
-        ref: 'v4.36.0'
-        commit: 'sha1-7211b7c8077ea37d8641b6271f6a365a22a5fbfa'
+    'github/codeql-action@v4.37.9':
+        ref: 'v4.37.9'
+        commit: 'sha1-cdf488f595d80d6e07e03d4674febd5ab45fa938'
         owner_id: 9919
         repo_id: 259445878
-    'haskell-actions/setup@v2.11.0':
-        ref: 'v2.11.0'
-        commit: 'sha1-cd0d9bdd65b20557f41bea4dbe43d0b5fbbfe553'
+    'haskell-actions/setup@v2.12.0':
+        ref: 'v2.12.0'
+        commit: 'sha1-6037f33647c3f17758a2356c80fc4a53d7e0685d'
         owner_id: 75048950
         repo_id: 623796603
     'hyperpolymath/cicd-suite@main':

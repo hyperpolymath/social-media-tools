@@ -78,7 +78,7 @@ check_file "LICENSE"
 check_file "LICENSES/PMPL-1.0-or-later.txt"
 check_file "SECURITY.md"
 check_file "CODE_OF_CONDUCT.md"
-check_file "CONTRIBUTING.adoc"
+check_file "../../.github/CONTRIBUTING.md"
 check_file "MAINTAINERS.adoc"
 check_file "CHANGELOG.md"
 echo ""
@@ -205,10 +205,10 @@ else
     check_warn "TPCF perimeter definitions not clearly documented"
 fi
 
-if grep -q -i "perimeter" CONTRIBUTING.adoc 2>/dev/null; then
-    check_pass "TPCF mentioned in CONTRIBUTING.adoc"
+if grep -q -i "perimeter" ../../.github/CONTRIBUTING.md 2>/dev/null; then
+    check_pass "TPCF mentioned in ../../.github/CONTRIBUTING.md"
 else
-    check_warn "TPCF should be mentioned in CONTRIBUTING.adoc"
+    check_warn "TPCF should be mentioned in ../../.github/CONTRIBUTING.md"
 fi
 echo ""
 

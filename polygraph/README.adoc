@@ -421,7 +421,7 @@ We welcome contributions! This project follows the *Tri-Perimeter Contribution F
 - *Perimeter 2 (Trusted Contributors)*: Regular contributors with proven track record
 - *Perimeter 1 (Core Maintainers)*: Project leadership and decision-making
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [MAINTAINERS.md](MAINTAINERS.md) for details.
+See [CONTRIBUTING.md](../.github/CONTRIBUTING.md) and [MAINTAINERS.md](MAINTAINERS.md) for details.
 
 === Quick Start
 

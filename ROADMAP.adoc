@@ -67,4 +67,4 @@ Social Media Tools is a monorepo containing analysis and verification tools for 
 
 == Contributing
 
-See link:CONTRIBUTING.md[Contributing Guidelines].
+See link:.github/CONTRIBUTING.md[Contributing Guidelines].

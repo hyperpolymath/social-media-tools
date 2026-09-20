@@ -18,7 +18,7 @@ permissions:
   security-events: write
 
 jobs:
-  scan:
+  hypatia:
     uses: hyperpolymath/standards/.github/workflows/hypatia-scan-reusable.yml@84355587cb2a1f86e6882de83514a32db2646e7a
     # SARIF upload uses the built-in workflow token; unrelated repository
     # credentials do not need to cross the reusable-workflow boundary.

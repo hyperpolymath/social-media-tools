@@ -46,12 +46,6 @@ jobs:
         run: |
           poetry run pytest
 
-      - name: Upload coverage
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457  # v3
-        with:
-          files: ./backend/coverage.xml
-          flags: backend
-
   frontend-tests:
     name: Frontend Tests
     runs-on: ubuntu-latest

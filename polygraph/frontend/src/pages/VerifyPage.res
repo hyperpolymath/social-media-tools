@@ -10,7 +10,7 @@ module VerifyPage = {
     let handleSubmit = _evt => {
       setLoading(_ => true)
 
-      // TODO: Call GraphQL mutation via Apollo Client
+      // MARKER(#127): Call GraphQL mutation via Apollo Client
       Js.Promise.resolve()
       ->Promise.thenResolve(_ => {
         setLoading(_ => false)

@@ -49,5 +49,10 @@ jobs:
       - name: Build production bundle
         run: npm run build
 
+      # npm audit requires a lockfile. The estate intentionally does not
+      # commit package-lock.json, so create one only inside the runner.
+      - name: Resolve ephemeral audit lock
+        run: npm install --package-lock-only --ignore-scripts --no-audit
+
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high

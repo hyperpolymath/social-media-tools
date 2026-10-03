@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@49933ea5288caeca8642195f2b846b8bbe245a93 # v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
 
@@ -48,6 +48,11 @@ jobs:
 
       - name: Build production bundle
         run: npm run build
+
+      # npm audit requires a lockfile. The estate intentionally does not
+      # commit package-lock.json, so create one only inside the runner.
+      - name: Resolve ephemeral audit lock
+        run: npm install --package-lock-only --ignore-scripts --no-audit
 
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high

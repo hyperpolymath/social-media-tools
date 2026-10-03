@@ -3,24 +3,62 @@
 
 module Client;
 
-// Apollo GraphQL client configuration
+// The browser talks to the same-origin proxy. Never hard-code localhost here:
+// in a deployed browser localhost is the user's own machine.
 
-open ApolloClient
+struct t;
+struct link;
+struct cache;
+struct documentNode;
 
-fn client = {
-  fn httpLink = HttpLink.make(~uri="http://localhost:8000/graphql", ())
-
-  fn cache = InMemoryCache.make()
-
-  make(
-    ~link=httpLink,
-    ~cache,
-    ~defaultOptions=DefaultOptions.make(
-      ~watchQuery=DefaultWatchQueryOptions.make(~fetchPolicy=CacheFirst, ()),
-      ~query=DefaultQueryOptions.make(~fetchPolicy=CacheFirst, ()),
-      (),
-    ),
-    (),
-  )
+struct httpLinkOptions {
+  uri: string;
 }
 
+struct clientOptions {
+  link: link;
+  cache: cache;
+}
+
+struct mutationOptions {
+  client: t;
+}
+
+struct mutationResult<'data> {
+  loading: bool;
+  data: option<'data>;
+  error: option<JSON.t>;
+}
+
+struct fetchResult<'data> {
+  data: option<'data>;
+}
+
+type mutation<'variables, 'data> = (
+  'variables => Promise.t<fetchResult<'data>>,
+  mutationResult<'data>,
+);
+
+@module("@apollo/client") @new
+external makeHttpLink: httpLinkOptions => link = "HttpLink";
+
+@module("@apollo/client") @new
+external makeInMemoryCache: unit => cache = "InMemoryCache";
+
+@module("@apollo/client") @new
+external makeApolloClient: clientOptions => t = "ApolloClient";
+
+@module("graphql")
+external parse: string => documentNode = "parse";
+
+@module("@apollo/client")
+external useMutation: (documentNode, mutationOptions) => mutation<'variables, 'data> = "useMutation";
+
+@module("@apollo/client") @react.component
+external provider: (~client: t, ~children: React.element) => React.element = "ApolloProvider";
+
+let client = {
+  let link = makeHttpLink({uri: "/graphql"});
+  let cache = makeInMemoryCache();
+  makeApolloClient({link, cache});
+};

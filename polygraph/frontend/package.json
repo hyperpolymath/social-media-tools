@@ -1,0 +1,27 @@
+{
+  "name": "social-media-polygraph-frontend",
+  "version": "0.2.0",
+  "private": true,
+  "description": "ReScript frontend for the Social Media Polygraph",
+  "scripts": {
+    "build": "npm run res:build && vite build",
+    "dev": "vite --host 0.0.0.0",
+    "lint": "rescript build",
+    "test:graphql": "node scripts/validate-graphql.mjs",
+    "res:build": "rescript build",
+    "res:clean": "rescript clean",
+    "type-check": "rescript build",
+    "preview": "vite preview --host 0.0.0.0"
+  },
+  "dependencies": {
+    "@apollo/client": "3.14.1",
+    "@rescript/react": "0.13.1",
+    "graphql": "16.13.2",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "rescript": "12.2.0"
+  },
+  "devDependencies": {
+    "vite": "^8.3.2"
+  }
+}

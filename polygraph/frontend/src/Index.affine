@@ -7,25 +7,6 @@ module Index;
 
 %%raw(`import "./index.css"`)
 
-module App = {
-  @react.component
-  fn make = () => {
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-4">
-          {React.string("Social Media Polygraph")}
-        </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          {React.string("AI-powered fact-checking with memory safety and formal verification")}
-        </p>
-        <VerifyPage />
-      </main>
-      <Footer />
-    </div>
-  }
-}
-
 module Header = {
   @react.component
   fn make = () => {
@@ -60,19 +41,42 @@ module Footer = {
       <div className="container mx-auto px-4 text-center">
         <p>{React.string("Built with Rust, ReScript, and WASM")}</p>
         <p className="mt-2 text-sm text-gray-400">
-          {React.string("Memory-safe, struct-safe, formally verified")}
+          {React.string("Memory-safe, type-safe, formally verified")}
         </p>
       </div>
     </footer>
   }
 }
 
+module App = {
+  @react.component
+  fn make = () => {
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-4">
+          {React.string("Social Media Polygraph")}
+        </h1>
+        <p className="text-xl text-gray-600 mb-8">
+          {React.string("AI-powered fact-checking with memory safety and formal verification")}
+        </p>
+        <VerifyPage />
+      </main>
+      <Footer />
+    </div>
+  }
+}
+
+module Root = {
+  @react.component
+  fn make = () => <Client.provider client=Client.client><App /></Client.provider>
+}
+
 // Initialize React app
 switch ReactDOM.querySelector("#root") {
 | Some(root) => {
     fn reactRoot = ReactDOM.Client.createRoot(root)
-    ReactDOM.Client.render(reactRoot, <App />)
+    ReactDOM.Client.Root.render(reactRoot, <Root />)
   }
-| None => Js.Console.error("Root element not found")
+| None => Console.error("Root element not found")
 }
-

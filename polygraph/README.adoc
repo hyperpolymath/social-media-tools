@@ -140,7 +140,7 @@ mix compile
 mix run --no-halt
 ```
 
-==== Frontend Setup (ReScript + Deno)
+==== Frontend Setup (ReScript + Vite)
 
 ```bash
 cd frontend
@@ -151,11 +151,11 @@ npm install
 = Compile ReScript to JavaScript
 npm run res:build
 
-= Build with Deno
-deno task build
+= Build the production bundle
+npm run build
 
-= Or run dev server
-deno task dev
+= Or run the Vite development server (proxies /graphql to localhost:8000)
+npm run dev
 ```
 
 == GraphQL API Usage
@@ -166,12 +166,10 @@ deno task dev
 curl -X POST "http://localhost:8000/graphql" \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "mutation VerifyClaim($input: ClaimInput!) { verifyClaim(input: $input) { claimId verdict confidence explanation sources { name url rating } credibilityScore } }",
+    "query": "mutation VerifyClaim($input: ClaimInput!) { verifyClaim(input: $input) { claimId verdict confidence explanation credibilityScore } }",
     "variables": {
       "input": {
-        "text": "The Earth is flat",
-        "sourceUrl": "https://example.com/post",
-        "platform": "TWITTER"
+        "text": "The Earth is flat"
       }
     }
   }'
@@ -187,13 +185,6 @@ curl -X POST "http://localhost:8000/graphql" \
       "verdict": "FALSE",
       "confidence": 0.95,
       "explanation": "This claim has been thoroughly debunked by scientific evidence...",
-      "sources": [
-        {
-          "name": "Google Fact Check",
-          "url": "https://factcheck.example.com/earth-shape",
-          "rating": 0.98
-        }
-      ],
       "credibilityScore": 0.15
     }
   }
@@ -259,9 +250,9 @@ mix credo --strict
 
 ```bash
 cd frontend
-npm run res:build  # ReScript type-checking
-deno task test
-deno lint
+npm run test:graphql
+npm run lint
+npm run build
 ```
 
 === Code Quality
@@ -279,11 +270,11 @@ mix format
 mix credo
 mix dialyzer
 
-= ReScript/Deno
+= ReScript/Vite
 cd frontend
-npm run res:build
-deno fmt --check
-deno lint
+npm run test:graphql
+npm run lint
+npm run build
 ```
 
 == Project Structure
@@ -306,14 +297,15 @@ social-media-polygraph/
 │   │   └── sync/          # State synchronization
 │   ├── mix.exs            # Elixir dependencies
 │   └── Containerfile      # Elixir container build
-├── frontend/              # ReScript + Deno frontend
+├── frontend/              # ReScript + React + Vite frontend
 │   ├── src/
 │   │   ├── components/    # React components (.res files)
 │   │   ├── pages/         # Page components
 │   │   ├── graphql/       # GraphQL queries and mutations
 │   │   └── Index.res      # Entry point
-│   ├── bsconfig.json      # ReScript configuration
-│   ├── deno.json          # Deno configuration
+│   ├── rescript.json      # ReScript configuration
+│   ├── package.json       # Node/Vite toolchain
+│   ├── vite.config.mjs    # Development proxy and production bundling
 │   └── Containerfile      # Frontend container build
 ├── browser-extension/     # Browser extension
 │   ├── src/              # Extension code

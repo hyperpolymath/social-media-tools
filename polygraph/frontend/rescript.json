@@ -1,6 +1,5 @@
 {
   "name": "social-media-polygraph-frontend",
-  "version": "0.2.0",
   "sources": [
     {
       "dir": "src",
@@ -9,14 +8,13 @@
   ],
   "package-specs": [
     {
-      "module": "es6",
+      "module": "esmodule",
       "in-source": true
     }
   ],
   "suffix": ".bs.js",
-  "bs-dependencies": [
-    "@rescript/react",
-    "rescript-apollo-client"
+  "dependencies": [
+    "@rescript/react"
   ],
   "warnings": {
     "error": "+101+8"
@@ -26,5 +24,5 @@
     "mode": "automatic"
   },
   "ppx-flags": [],
-  "bsc-flags": ["-open Belt"]
+  "compiler-flags": ["-open Belt"]
 }

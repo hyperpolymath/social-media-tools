@@ -1,17 +1,17 @@
 # SPDX-License-Identifier: MPL-2.0
-name: Polygraph Frontend CI
+name: Polygraph Frontend
 
 on:
   push:
     branches: [main]
     paths:
-      - "frontend/**"
-      - ".github/workflows/ci.yml"
+      - "polygraph/frontend/**"
+      - ".github/workflows/polygraph-frontend.yml"
   pull_request:
     branches: [main]
     paths:
-      - "frontend/**"
-      - ".github/workflows/ci.yml"
+      - "polygraph/frontend/**"
+      - ".github/workflows/polygraph-frontend.yml"
 
 permissions:
   contents: read
@@ -21,13 +21,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  frontend:
+  build:
     name: Build and validate frontend
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
       run:
-        working-directory: ./frontend
+        working-directory: polygraph/frontend
     steps:
       - name: Check out source
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
@@ -37,6 +37,9 @@ jobs:
         with:
           node-version: "22"
 
+      # package-lock.json is intentionally not committed in this estate. All
+      # direct dependencies are exact versions in package.json and Deno's lock
+      # file is kept as the lock for the Deno import graph.
       - name: Install dependencies
         run: npm install --package-lock=false --no-audit --no-fund
 

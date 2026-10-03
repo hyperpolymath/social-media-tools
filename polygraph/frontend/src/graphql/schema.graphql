@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: MPL-2.0
+# Contract consumed by the verify mutation. Keep this in sync with the
+# async-graphql VerificationResult and ClaimInput types in the backend.
+
+scalar UUID
+
+enum Verdict {
+  TRUE
+  MOSTLY_TRUE
+  MIXED
+  MOSTLY_FALSE
+  FALSE
+  UNVERIFIABLE
+}
+
+type VerificationResult {
+  claimId: UUID!
+  verdict: Verdict!
+  confidence: Float!
+  explanation: String!
+  credibilityScore: Float!
+}
+
+input ClaimInput {
+  text: String!
+}
+
+type Claim {
+  id: UUID!
+  text: String!
+  platform: String
+  textHash: String!
+  status: String!
+}
+
+type Query {
+  health: String!
+  claim(id: String!): Claim
+}
+
+type Mutation {
+  verifyClaim(input: ClaimInput!): VerificationResult!
+}

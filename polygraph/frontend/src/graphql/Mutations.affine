@@ -3,25 +3,28 @@
 
 module Mutations;
 
-// GraphQL mutations
+// Keep the operation aligned with backend VerificationResult. The previous
+// stub selected fields from an obsolete REST response shape.
+module VerifyClaimMutation = {
+  let document = Client.parse("mutation VerifyClaim($input: ClaimInput!) { verifyClaim(input: $input) { claimId verdict confidence explanation credibilityScore } }");
+};
 
-module VerifyClaimMutation = %graphql(`
-  mutation VerifyClaim($input: ClaimInput!) {
-    verifyClaim(input: $input) {
-      claimId
-      verdict
-      confidence
-      explanation
-      sources {
-        name
-        verdict
-        rating
-        url
-      }
-      entities
-      credibilityScore
-      checkedAt
-    }
-  }
-`)
+struct input {
+  text: string;
+}
 
+type variables = {
+  input: input,
+};
+
+struct verification {
+  claimId: string;
+  verdict: string;
+  confidence: float;
+  explanation: string;
+  credibilityScore: float;
+}
+
+type response = {
+  verifyClaim: verification,
+};

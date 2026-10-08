@@ -27,10 +27,10 @@ test-elixir:
 
 # Run frontend tests
 test-frontend:
-    @echo "Running ReScript build (type check)..."
-    cd frontend && npm run res:build
-    @echo "Running Deno tests..."
-    cd frontend && deno task test || true
+    @echo "Validating GraphQL operation contract..."
+    cd frontend && npm run test:graphql
+    @echo "Running ReScript type check..."
+    cd frontend && npm run lint
 
 # Run all tests
 test: test-backend test-elixir test-frontend
@@ -42,8 +42,8 @@ fmt:
     cd backend && cargo fmt
     @echo "Formatting Elixir code..."
     cd elixir && mix format
-    @echo "Formatting frontend code..."
-    cd frontend && deno fmt
+    @echo "Frontend formatting is covered by the ReScript compiler and Vite build."
+    cd frontend && npm run lint
 
 # Lint code
 lint:
@@ -51,10 +51,10 @@ lint:
     cd backend && cargo clippy -- -D warnings
     @echo "Linting Elixir..."
     cd elixir && mix credo || true
-    @echo "Linting frontend..."
-    cd frontend && deno lint
+    @echo "Validating GraphQL contract..."
+    cd frontend && npm run test:graphql
     @echo "Type-checking ReScript..."
-    cd frontend && npm run res:build
+    cd frontend && npm run lint
 
 # Run backend locally
 run-backend:
@@ -68,9 +68,8 @@ run-elixir:
 
 # Run frontend locally
 run-frontend:
-    @echo "Starting ReScript + Deno dev server..."
-    cd frontend && npm run res:watch &
-    cd frontend && deno task dev
+    @echo "Starting ReScript + Vite dev server..."
+    cd frontend && npm run dev
 
 # Build all components
 build: build-backend build-elixir build-frontend
@@ -87,10 +86,8 @@ build-elixir:
 
 # Build frontend for production
 build-frontend:
-    @echo "Compiling ReScript..."
-    cd frontend && npm run res:build
-    @echo "Building with Deno..."
-    cd frontend && deno task build
+    @echo "Building ReScript and the Vite production bundle..."
+    cd frontend && npm run build
 
 # Start all services with Podman Compose
 up:

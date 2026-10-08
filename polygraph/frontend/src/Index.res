@@ -1,25 +1,7 @@
+// SPDX-License-Identifier: MPL-2.0
 // Main entry point for ReScript frontend
 
 %%raw(`import "./index.css"`)
-
-module App = {
-  @react.component
-  let make = () => {
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-4">
-          {React.string("Social Media Polygraph")}
-        </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          {React.string("AI-powered fact-checking with memory safety and formal verification")}
-        </p>
-        <VerifyPage />
-      </main>
-      <Footer />
-    </div>
-  }
-}
 
 module Header = {
   @react.component
@@ -62,11 +44,35 @@ module Footer = {
   }
 }
 
+module App = {
+  @react.component
+  let make = () => {
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold mb-4">
+          {React.string("Social Media Polygraph")}
+        </h1>
+        <p className="text-xl text-gray-600 mb-8">
+          {React.string("AI-powered fact-checking with memory safety and formal verification")}
+        </p>
+        <VerifyPage />
+      </main>
+      <Footer />
+    </div>
+  }
+}
+
+module Root = {
+  @react.component
+  let make = () => <Client.provider client=Client.client><App /></Client.provider>
+}
+
 // Initialize React app
 switch ReactDOM.querySelector("#root") {
 | Some(root) => {
     let reactRoot = ReactDOM.Client.createRoot(root)
-    ReactDOM.Client.render(reactRoot, <App />)
+    ReactDOM.Client.Root.render(reactRoot, <Root />)
   }
-| None => Js.Console.error("Root element not found")
+| None => Console.error("Root element not found")
 }

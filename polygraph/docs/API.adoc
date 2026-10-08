@@ -6,6 +6,36 @@
 http://localhost:8000/api/v1
 ....
 
+=== GraphQL verification contract
+
+The ReScript frontend sends verification requests to the same-origin
+`+/graphql+` endpoint. The reverse proxy forwards that path to the backend;
+the browser never receives a machine-local `localhost` URL.
+
+[source,graphql]
+----
+mutation VerifyClaim($input: ClaimInput!) {
+  verifyClaim(input: $input) {
+    claimId
+    verdict
+    confidence
+    explanation
+    credibilityScore
+  }
+}
+----
+
+[source,json]
+----
+{
+  "input": { "text": "The claim text to verify" }
+}
+----
+
+The checked-in frontend contract is
+`+frontend/src/graphql/schema.graphql+`; CI validates the operation against
+that contract before producing the Vite bundle.
+
 === Authentication
 
 The API supports two authentication methods:

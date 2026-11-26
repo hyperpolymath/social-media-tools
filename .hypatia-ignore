@@ -20,12 +20,10 @@
 # grow.
 #
 # Inventory taken 2026-08-06 across all 424 estate repositories.
-# Files covered: 7 rescript, 2 python
+# Files covered: 7 rescript (the 2 python files were ported to Rust)
 
 cicd_rules/banned_language_file:dipstick/services/analyzer-rescript/src/Main.res
-cicd_rules/banned_language_file:dipstick/services/database-adapter/virtuoso_adapter.py
 cicd_rules/banned_language_file:dipstick/services/gateway-rescript/src/Gateway.res
-cicd_rules/banned_language_file:dipstick/tools/autoconfig/smtp_autoconfig.py
 cicd_rules/banned_language_file:polygraph/frontend/src/Index.res
 cicd_rules/banned_language_file:polygraph/frontend/src/graphql/Client.res
 cicd_rules/banned_language_file:polygraph/frontend/src/graphql/Mutations.res

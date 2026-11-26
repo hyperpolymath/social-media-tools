@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: MPL-2.0
+[package]
+name = "smtp-autoconfig"
+version = "0.1.0"
+edition = "2021"
+authors = ["Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>"]
+description = "Interactive SMTP autoconfiguration wizard for NUJ Monitor"
+license = "MPL-2.0"
+publish = false
+
+[[bin]]
+name = "smtp-autoconfig"
+path = "src/main.rs"
+
+[dependencies]
+hickory-resolver = "0.26.4"
+lettre = { version = "0.11.24", default-features = false, features = ["smtp-transport", "builder", "tokio1", "tokio1-rustls", "rustls-platform-verifier", "ring"] }
+tokio = { version = "1.54.1", features = ["rt", "macros"] }

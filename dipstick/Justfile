@@ -198,7 +198,7 @@ deploy-prod:
 # Run SMTP autoconfiguration wizard
 setup-smtp:
     @echo "📧 SMTP Autoconfiguration..."
-    python tools/autoconfig/smtp_autoconfig.py
+    cargo run --release --quiet --manifest-path tools/autoconfig/Cargo.toml
 
 # Validate configuration files
 validate-config:

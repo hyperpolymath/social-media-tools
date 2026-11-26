@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: MPL-2.0
+[package]
+name = "nuj-virtuoso-adapter"
+version = "0.1.0"
+edition = "2021"
+authors = ["Jonathan D.A. Jewell <6759885+hyperpolymath@users.noreply.github.com>"]
+description = "Virtuoso RDF/SPARQL adapter for semantic policy tracking"
+license = "MPL-2.0"
+publish = false
+
+[lib]
+name = "nuj_virtuoso_adapter"
+path = "src/lib.rs"
+
+[dependencies]
+chrono = "0.4.45"
+reqwest = { version = "0.13.5", default-features = false, features = ["json", "form", "rustls"] }
+serde_json = "1.0.154"
+thiserror = "2.0.21"
+
+[dev-dependencies]
+tokio = { version = "1.54.1", features = ["macros", "rt", "rt-multi-thread"] }
